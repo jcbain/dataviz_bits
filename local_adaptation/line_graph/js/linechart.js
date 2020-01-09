@@ -115,20 +115,17 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
     })  
 
     let dataPartOne = data.filter(function(d){
-        return d.mu == "1e-6" && d.r == "1e-6" && d.sigsqr == "5" && d.m == "1e-4" ;
+        return d.mu == "1e-6" && d.r == "1e-6" && d.sigsqr == "5" && d.m == "1e-4";
     })
 
-    let d1 = d3.nest()
-                .key(d => d.pop)
-                .entries(dataPartOne);
-    
-    console.log(d1);
+    let d1 = dataPartOne.filter(function(d){
+        return d.pop == "0";
+    })
 
-    let numPops = d1.map(d => d.key);
-    let color = d3.scaleOrdinal()
-        .domain(numPops)
-        .range(['#e41a1c','#377eb8']);
-    
+    let d2 = dataPartOne.filter(function(d){
+        return d.pop == "1";
+    })
+
 
 
     let line = d3.line()
@@ -160,6 +157,20 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
     //     .attr('stroke-width', 4)
     //     .attr('d', line);    
 
+    let path1 = svg.append('path')
+        .datum(d1)
+        .attr('stroke', '#fc6742')
+        .attr('fill', 'none')
+        .attr('stroke-width', 4)
+        .attr('d', line);
+
+    path2 = svg.append('path')
+        .datum(d2)
+        .attr('stroke', '#4287f5')
+        .attr('fill', 'none')
+        .attr('stroke-width', 4)
+        .attr('d', line);
+
 
     svg.append('path')
         .datum( showcaseDataPop2 )
@@ -190,8 +201,28 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
         .attr("stroke-width", "2")
         .attr("fill", "none");
 
+    let totalLength1 = path1.node().getTotalLength();
+    let totalLength2 = path2.node().getTotalLength();
+
     let totalLengthPop1 = pathPop1.node().getTotalLength();
     let totalLengthPop2 = pathPop2.node().getTotalLength();
+
+    path1
+        .attr('stroke-dasharray', totalLength1 + " " + totalLength1)
+        .attr('stroke-dashoffset', totalLength1)
+        .transition()
+        .duration(3000)
+        .ease(d3.easeLinear)
+        .attr('stroke-dashoffset', 0);
+
+    path2
+        .attr('stroke-dasharray', totalLength2 + " " + totalLength2)
+        .attr('stroke-dashoffset', totalLength2)
+        .transition()
+        .duration(3000)
+        .ease(d3.easeLinear)
+        .attr('stroke-dashoffset', 0);
+
 
     pathPop1
         .attr("stroke-dasharray", totalLengthPop1 + " " + totalLengthPop1)
@@ -211,30 +242,16 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
 
 
     function updateData(dataset) {
-  // Create a update selection: bind to the new data
-//   var u = svg.selectAll(".lineTest")
-    //  var u = svg.selectAll('.lineTest')
-    var u = pathPop1
-        .datum(dataset)
-        .attr("stroke-dasharray", 0 + " " + 0);
+        let updatePath1 = path1
+            .datum(dataset)
+            .attr('stroke-dasharray', "0 0");
 
-    let totalLengthPopNew = u.node().getTotalLength();
-
-    console.log(totalLengthPopNew);
-     
-
-  // Updata the line
-  u
-    // .enter()
-    // .append("path")
-    .merge(u)
-    // .attr('class', 'lineTest')
-    .transition()
-    .duration(3000)
-    .attr("d", line)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 5)
+        // Updata the line
+        updatePath1
+            .merge(updatePath1)
+            .transition()
+            .duration(3000)
+            .attr("d", line)
     }
 
     // updateData(showcaseDataM1en6);
