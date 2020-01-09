@@ -44,34 +44,6 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
     
     return dataPopPhenotype;
 
-    // // draw svg box
-    // let svg = d3.select('#line-chart')
-    //     .append('svg')
-    //     .attr('width', chartWidth)
-    //     .attr('height', chartHeight);
-
-    // let xScale = d3.scaleLinear()
-    //     .domain([0, d3.max(dataPopPhenotype, d => d.output_gen)])
-    //     .range(padding, chartWidth - padding);
-
-    // console.log(d3.max(dataPopPhenotype, d => d.output_gen));
-    // console.log(padding);
-    // console.log(chartWidth - padding);
-    
-    // let yScale = d3.scaleLinear()
-    //     .domain([-2, 2])
-    //     .range(chartHeight - padding, padding);
-
-    // let xAxis = d3.axisBottom( xScale );
-
-    // svg.append('g')
-    //     .attr('class', 'x-axis')
-    //     .attr('transform',
-    //           'translate(0, 400)'
-    //          )
-    //     .call( xAxis );
-
-    // console.log(dataPopPhenotype);
 }).then(data => {
     // draw svg box
     let svg = d3.select('#line-chart')
@@ -87,8 +59,32 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
         .domain([-.6, .6])
         .range([chartHeight - padding, padding]);
     
+    
+    let tickVals = [];
+    let tickLabs = [];
+    let currentTickVals = xScale.ticks();
+    let maxXVal = d3.max(xScale.ticks());
+    for (let i = 0; i <= maxXVal; i += 1000){
+        tickVals.push(i);
+    }
+    tickVals.forEach(v => {
+        if(currentTickVals.includes(v)){
+            if(v == 0){
+                tickLabs.push("")
+            } else{
+                tickLabs.push(v/1000 + "K");
+            }
+        } else {
+            tickLabs.push("");
+        }
+    })
+    
     // create axes
-    let xAxis = d3.axisBottom( xScale );
+    let xAxis = d3.axisBottom( xScale )
+        .tickValues(tickVals)
+        .tickFormat(function(d,i){
+        return tickLabs[i];
+    });
     let yAxis = d3.axisLeft( yScale );
 
     svg.append('g')
@@ -96,7 +92,17 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
         .attr('transform',
               'translate(0,' + (chartHeight - padding) + ')'
              )
-        .call( xAxis );
+        .call( xAxis )
+        .call(g => g.select('.domain').remove()); // remove axis line
+
+    d3.selectAll('g.x-axis g.tick line')
+        .attr('y2', function(d){
+            if(currentTickVals.includes(d)){
+                return 10;
+            } else {
+                return 2;
+            }
+        })
 
     svg.append('g')
         .attr('class', 'y-axis')
@@ -115,6 +121,10 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
     })  
 
     let dataPartOne = data.filter(function(d){
+        return d.mu == "1e-6" && d.r == "1e-6" && d.sigsqr == "5" && d.m == "1e-5";
+    })
+
+    let dataPartTwo = data.filter(function(d){
         return d.mu == "1e-6" && d.r == "1e-6" && d.sigsqr == "5" && d.m == "1e-4";
     })
 
@@ -123,6 +133,14 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
     })
 
     let d2 = dataPartOne.filter(function(d){
+        return d.pop == "1";
+    })
+
+    let d12 = dataPartTwo.filter(function(d){
+        return d.pop == "0";
+    })
+
+    let d22 = dataPartTwo.filter(function(d){
         return d.pop == "1";
     })
 
@@ -141,21 +159,9 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
             return yScale(d.pop_phen);
         });
     
-    // svg.append('path')
-    //     .datum( showcaseDataPop1 )
-    //     .attr('stroke', '#73ff36')
-    //     .attr('fill', 'none')
-    //     .attr('stroke-width', 2)
-    //     .attr('d', line);
-    
+
     // TODO: Create paths with grouping instead of all of this repeat code.
     //       In other words, I really need to clean this up.
-    // svg.append('path')
-    //     .datum(d1)
-    //     .attr('stroke', function(d){return color(d.key)})
-    //     .attr('fill', 'none')
-    //     .attr('stroke-width', 4)
-    //     .attr('d', line);    
 
     let path1 = svg.append('path')
         .datum(d1)
@@ -164,28 +170,20 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
         .attr('stroke-width', 4)
         .attr('d', line);
 
-    path2 = svg.append('path')
+    let path2 = svg.append('path')
         .datum(d2)
         .attr('stroke', '#4287f5')
         .attr('fill', 'none')
         .attr('stroke-width', 4)
         .attr('d', line);
 
-
-    svg.append('path')
-        .datum( showcaseDataPop2 )
-        .attr('stroke', 'red')
-        .attr('fill', 'none')
-        .attr('stroke-width', 2)
-        .attr('d', line);
-
-    svg.append('line')
-        .attr('x1', padding)
-        .attr('x2', chartWidth - padding)
-        .attr('y1', chartHeight - (padding/2))
-        .attr('y2', chartHeight - (padding/2))
-        .attr('stroke', 'gray')
-        .attr('stroke-width', 3);
+    // svg.append('line')
+    //     .attr('x1', padding)
+    //     .attr('x2', chartWidth - padding)
+    //     .attr('y1', chartHeight - (padding/2))
+    //     .attr('y2', chartHeight - (padding/2))
+    //     .attr('stroke', 'gray')
+    //     .attr('stroke-width', 3);
 
     let pathPop1 = svg.append("path")
         .datum(showcaseDataPop1)
@@ -204,9 +202,6 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
     let totalLength1 = path1.node().getTotalLength();
     let totalLength2 = path2.node().getTotalLength();
 
-    let totalLengthPop1 = pathPop1.node().getTotalLength();
-    let totalLengthPop2 = pathPop2.node().getTotalLength();
-
     path1
         .attr('stroke-dasharray', totalLength1 + " " + totalLength1)
         .attr('stroke-dashoffset', totalLength1)
@@ -223,35 +218,27 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
         .ease(d3.easeLinear)
         .attr('stroke-dashoffset', 0);
 
-
-    pathPop1
-        .attr("stroke-dasharray", totalLengthPop1 + " " + totalLengthPop1)
-        .attr("stroke-dashoffset", totalLengthPop1)
-        .transition()
-        .duration(4000)
-        .ease(d3.easeLinear)
-        .attr("stroke-dashoffset", 0);
-
-    pathPop2
-        .attr("stroke-dasharray", totalLengthPop2 + " " + totalLengthPop2)
-        .attr("stroke-dashoffset", totalLengthPop2)
-        .transition()
-        .duration(4000)
-        .ease(d3.easeLinear)
-        .attr("stroke-dashoffset", 0);
-
-
     function updateData(dataset) {
         let updatePath1 = path1
             .datum(dataset)
-            .attr('stroke-dasharray', "0 0");
+            .attr('stroke-dasharray', '0 0');
+
+        let updatePath2 = path2
+            .datum(dataset)
+            .attr('stroke-dasharray', '0 0');
 
         // Updata the line
         updatePath1
             .merge(updatePath1)
             .transition()
             .duration(3000)
-            .attr("d", line)
+            .attr("d", line);
+
+        updatePath2
+            .merge(updatePath2)
+            .transition()
+            .duration(3000)
+            .attr("d", line);
     }
 
     // updateData(showcaseDataM1en6);
@@ -264,24 +251,5 @@ d3.json("DATA/mutations_bg.json").then( dataset => {
         .on('click', () => {
             updateData(showcaseDataM1en6);
         })
-
-    // let curtain = svg.append('rect')
-    //     .attr('x', -1 * chartWidth)
-    //     .attr('y', -1 * chartHeight)
-    //     .attr('height', chartHeight)
-    //     .attr('width', chartWidth)
-    //     .attr('class', 'curtain')
-    //     .attr('transform', 'rotate(180)')
-    //     .style('fill', '#ffffff')
-    //     .style('opacity', .7)
-
-
-    // d3.select('.m-big')
-    //     .on('click', () => {
-    //         let newData = filteredData.filter(function(d) {
-    //             return d.m == "1e-4";
-    //         })
-    //         console.log(newData);
-    //     })
 
 })
