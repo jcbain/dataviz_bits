@@ -93,37 +93,34 @@ d3.json("data/mutations_bg.json").then( data => {
         .enter()
         .append('path')
         .attr('fill', 'none')
-        .attr('stroke', d => color(d.key))
+        // .attr('stroke', d => color(d.key))
         .attr('stroke-width', 1.5);
-        // .attr('d', function(d){
-        //     return d3.line()
-        //         .x( d => xScale(d.output_gen) )
-        //         .y( d => yScale(d.pop_phen) )
-        //         (d.values)
-        // });
 
-    let linearGradient = svg.append('defs')
+    // let linearGradient = svg.append('defs')
+    //     .append('linearGradient')
+    //     .attr('id', 'line-gradient');
+
+    let gradients = svg.selectAll('defs')
+        .data(popKeys)
+        .enter()
         .append('linearGradient')
-        // .attr('gradientUnits', 'userSpaceOnUse')
-        // .attr('x1', 0)
-        // .attr('y1', 0)
-        // // .attr('x2', chartWidth + 'vw')
-        // // .attr('x2', '100%')
-        // .attr('y2', 0)
-        .attr('id', 'line-gradient');
+        .attr('id', d => 'gradient_pop_' + d);
 
     
-    let startGrey = linearGradient.append("stop").attr("stop-color", "#D6D6D6");
-    let startColor = linearGradient.append("stop").attr("stop-color", "#BD2E86");
-    let endColor = linearGradient.append("stop").attr("stop-color", "#BD2E86"); 
-    let endGrey = linearGradient.append("stop").attr("stop-color", "#D6D6D6");
+    // let startGrey = linearGradient.append("stop").attr("stop-color", "#D6D6D6");
+    // let startColor = linearGradient.append("stop").attr("stop-color", "#BD2E86");
+    // let endColor = linearGradient.append("stop").attr("stop-color", "#BD2E86"); 
+    // let endGrey = linearGradient.append("stop").attr("stop-color", "#D6D6D6");
 
-    let highlightRect = svg.append('rect')
-        .attr('class', 'exampleRect')
-        // .attr('width', chartWidth + 'vw')
-        // .attr('height', chartHeight + 'vh')
-        .style('opacity', '50%')
-        .style('fill', 'url(#line-gradient)');
+    let startGrey = gradients.append('stop').attr('stop-color', '#D6D6D6');
+    let startColor = gradients.append('stop').attr('stop-color', d => color(d));
+    let endColor = gradients.append('stop').attr('stop-color', d => color(d));
+    let endGrey = gradients.append('stop').attr('stop-color', '#D6D6D6'); 
+
+    // let highlightRect = svg.append('rect')
+    //     .attr('class', 'exampleRect')
+    //     .style('opacity', '50%')
+    //     .style('fill', 'url(#line-gradient)');
 
 
 
@@ -131,33 +128,29 @@ d3.json("data/mutations_bg.json").then( data => {
     function drawResponsiveChart(){
         let currentWidth = parseInt(svg.style('width'), 10);
         let currentHeight = parseInt(svg.style('height'), 10);
-        console.log(svg.style('width'));
-        console.log(d3.select('#line-chart').style('width'));
         xScale.range([padding, currentWidth - padding]);
         yScale.range([currentHeight - padding, padding]);
 
-        linearGradient.attr("gradientUnits", "userSpaceOnUse")
+        // linearGradient.attr("gradientUnits", "userSpaceOnUse")
+        gradients.attr('gradientUnits', 'userSpaceOnUse')
             .attr('x1', 0)
             .attr('y1', 0)
             .attr('x2', currentWidth)
             .attr('y2', 0);
 
-        highlightRect
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', currentWidth + 'px')
-            .attr('height', currentHeight);
+        // highlightRect
+        //     .attr('x', 0)
+        //     .attr('y', 0)
+        //     .attr('width', currentWidth + 'px')
+        //     .attr('height', currentHeight);
 
         startGrey.attr("class", "left").attr("offset", "40%");
         startColor.attr("class", "left").attr("offset", "40%");
         endColor.attr("class", "right").attr("offset", "60%");
         endGrey.attr("class", "right").attr("offset", "60%");
 
-
-
-        
-        console.log(xScale(0));
         line
+        .attr('stroke', d => 'url(#gradient_pop_' + d.key +')')
         .attr('d', function(d){
             return d3.line()
                 .x( d => xScale(d.output_gen))
