@@ -54,7 +54,7 @@ d3.json("data/mutations_bg.json").then( data => {
 
     // define the scales
     let xScale = d3.scaleLinear()
-        .domain([d3.min(dataPopPhen, d => d.output_gen),
+        .domain([d3.min(dataPopPhen, d => d.output_gen), 
                  d3.max(dataPopPhen, d => d.output_gen)])
         .range([padding, chartWidth - padding]);
         
@@ -64,6 +64,7 @@ d3.json("data/mutations_bg.json").then( data => {
             d3.max(dataPopPhen, d => d.pop_phen)
         ])
         .range([chartHeight - padding, padding]);
+
 
     // update data
     let dataFiltered = dataPopPhen.filter(function(d){
@@ -89,12 +90,19 @@ d3.json("data/mutations_bg.json").then( data => {
         .attr('y1', 0)
         .attr('x2', '100%')
         .attr('y2', 0);
+ 
 
     // define start and stop colors for gradient
     let startGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "left").attr("offset", "40%");
     let startColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "left").attr("offset", "40%");
     let endColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "right").attr("offset", "60%");
     let endGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "right").attr("offset", "60%");
+
+    let xAxis = g => g
+        .attr("transform", `translate(0,${chartHeight - padding *2})`)
+        .call(d3.axisBottom(xScale));
+    svg.append("g")
+        .call(xAxis);
 
     let line = svg.selectAll('.line')
         .data(dataGrouped)
@@ -110,6 +118,48 @@ d3.json("data/mutations_bg.json").then( data => {
                 (d.values)
         });
 
+    let brush = d3.brushX()
+        .extent([[padding, padding], [chartWidth - padding, chartHeight - padding]])
+        .on('start brush end', brushed)
+
+    console.log(d3.max(dataPopPhen, d => d.output_gen) * .4)
+    console.log(d3.min(dataPopPhen, d => d.output_gen))
+    
+    let initStart = (d3.max(dataPopPhen, d => d.output_gen) * .4) + 1000 * .6;
+    let initEnd = padding + (d3.max(dataPopPhen, d => d.output_gen) * .6) + 1000 * .4;
+    svg.append('g')
+        .call(brush)
+        .call(brush.move, [initStart, initEnd].map(xScale))
+        .call(g => g.select('.overlay'))
+        .datum({type: 'selection'})
+        .on('mousedown touchstart', beforebrushstarted)
+
+    function beforebrushstarted() {
+        let dx = xScale(2000) - xScale(1000);
+        let [cx] = d3.mouse(this);
+        let [x0, x1] = [cx - dx / 2, cx + dx / 2];
+        let [X0, X1] = xScale.range();
+        d3.select(this.parentNode)
+            .call(brush.move, x1 > X1 ? [X1 - dx, X1] 
+                : x0 < X0 ? [X0, X0 + dx] 
+                : [x0, x1]);
+
+    }
+
+    function brushed() {
+        const selection = d3.event.selection;
+        if (selection === null) {
+            return;
+
+        } else {
+          let [x0, x1] = selection.map(xScale.invert);
+          d3.selectAll('.left').attr('offset', (x0/50000)*100 + "%");
+          d3.selectAll('.right').attr('offset', (x1/50000)*100 + "%");
+
+        //   d3.selectAll(".left").attr("offset", x1/40000 + "%")
+        //   d3.selectAll(".right").attr("offset",  x1/40000 + "%");
+        }
+      }
 
 
 });
