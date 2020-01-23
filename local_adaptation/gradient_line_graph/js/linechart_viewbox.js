@@ -93,46 +93,13 @@ d3.json("data/mutations_bg.json").then( data => {
         .attr('x2', chartWidth - margin.right)
         .attr('y2', 0);
     
-    console.log((xScale.range()[1]) * .01);
-    console.log(xScale.invert(7.8))
-    console.log(xScale(20000)/7.8)
-
-
-    console.log((xScale(20000) - 20)/7.8);
-    // 1000 + (x * 213) = 20000
-    console.log((20000 - 1000)/xScale.invert(7.8));
-    console.log(1000 + (xScale.invert(7.8)*2));
-    console.log((xScale(1000) + (7.8*2)));
-    console.log(xScale.invert(35.6))
-    console.log(((xScale(20000) - xScale(1000))/7.8))
-    console.log(312.1297749869179/800)
-    console.log((xScale(20000)/7.8))
-
-    console.log(xScale(390));
-    console.log(xScale.invert(780 * .50));
-    console.log(7.8 * 50);
-    console.log(xScale.invert(3*7.8));
-    console.log(xScale.invert(8));
-
-    console.log(1000 + (2*213.42105263157896))
-    // 5000 = 1000 + (x * 213.42105263157896)
-    let secondScale = d3.scaleLinear()
+    let brushContextScale = d3.scaleLinear()
         .domain([d3.min(dataPopPhen, d => d.output_gen), 
             d3.max(dataPopPhen, d => d.output_gen)])
         .range([0, 100]);
 
-    console.log(secondScale(20000));
-
-
-    svg.append('rect')
-        .attr('x', 27.8)
-        .attr('height', chartHeight)
-        .attr('width', 7.8 * 38)
-        .attr('stroke', 'green')
-        .attr('opacity', .1);
-
-    let startPerc = "8.16326530612245%" 
-    let endPerc = "38.775510204081634%";
+    let startPerc = "10%" 
+    let endPerc = "20%";
 
     // define start and stop colors for gradient
     let startGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "left").attr("offset", startPerc);
@@ -165,19 +132,6 @@ d3.json("data/mutations_bg.json").then( data => {
         .extent([[margin.left, margin.top], [chartWidth - margin.right, chartHeight - margin.bottom]])
         .on('start brush end', brushed)
 
-    console.log(brush.extent()[0])
-
-    let contextStart = (chartWidth * .4);
-    let contextEnd = (chartWidth * .6) - margin.left + margin.right;
-    let maxVal = d3.max(dataPopPhen, d => d.output_gen);
-    
-    let initStart = (d3.max(dataPopPhen, d => d.output_gen) * .4) + 1000 * .6;
-    let initEnd = padding + (d3.max(dataPopPhen, d => d.output_gen) * .6) + 1000 * .4;
-
-    // console.log(xScale(initStart))
-    // console.log(xScale.invert(contextStart))
-    // console.log((xScale(20000) + margin.left)/chartWidth);
-
     svg.append('g')
         .call(brush)
         .call(brush.move, [1000, 5000].map(xScale))
@@ -186,31 +140,25 @@ d3.json("data/mutations_bg.json").then( data => {
         .on('mousedown touchstart', beforebrushstarted)
 
     function beforebrushstarted() {
-        const dx = xScale(1000) - xScale(1000); // Use a fixed width when recentering.
-        console.log(dx);
+        const dx = xScale(4000) - xScale(1000); // Use a fixed width when recentering.
         const [cx] = d3.mouse(this);
         const [x0, x1] = [cx - dx / 2, cx + dx / 2];
-        const [X0, X1] = x.range();
-        d3.select(this.parentNode)
+        const [X0, X1] = xScale.range();
+        d3.select(this)
             .call(brush.move, x1 > X1 ? [X1 - dx, X1] 
                 : x0 < X0 ? [X0, X0 + dx] 
                 : [x0, x1]);
         }
 
-
-    let gradStart = ((xScale(20000) - margin.left)/chartWidth) * 100;
-    // console.log(gradStart);
-
     function brushed() {
         let selection = d3.event.selection;
         if (selection === null) {
-
+            d3.selectAll('.left').attr('offset', "0%");
+            d3.selectAll('.right').attr('offset', "0%");
         } else {
           let [x0, x1] = selection.map(xScale.invert);
-          console.log(x0 + "," + x1);
-          console.log((xScale(x0) + margin.left)/chartWidth);
-          d3.selectAll('.left').attr('offset', secondScale(x0) + "%");
-          d3.selectAll('.right').attr('offset', secondScale(x1) + "%");
+          d3.selectAll('.left').attr('offset', brushContextScale(x0) + "%");
+          d3.selectAll('.right').attr('offset', brushContextScale(x1) + "%");
 
         }
       }
