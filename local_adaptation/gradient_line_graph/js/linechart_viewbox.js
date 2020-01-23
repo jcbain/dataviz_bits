@@ -13,6 +13,7 @@ let chartWidth = 800,
     chartHeight = 100,
     padding = 10;
 
+let margin = {top: 10, right: 20, bottom: 20, left: 20};
 
 d3.json("data/mutations_bg.json").then( data => {
 
@@ -48,6 +49,7 @@ d3.json("data/mutations_bg.json").then( data => {
     // PLOTTING HAPPENS HERE |
     // ********************* V
 
+
     let svg = d3.select('#line-chart')
         .append('svg')
         .attr("viewBox", [0, 0, chartWidth, chartHeight]);
@@ -56,15 +58,14 @@ d3.json("data/mutations_bg.json").then( data => {
     let xScale = d3.scaleLinear()
         .domain([d3.min(dataPopPhen, d => d.output_gen), 
                  d3.max(dataPopPhen, d => d.output_gen)])
-        .range([padding, chartWidth - padding]);
+        .range([margin.left, chartWidth - margin.right]);
         
     let yScale = d3.scaleLinear()
         .domain([
             d3.min(dataPopPhen, d => d.pop_phen),
             d3.max(dataPopPhen, d => d.pop_phen)
         ])
-        .range([chartHeight - padding, padding]);
-
+        .range([chartHeight - margin.bottom, margin.top]);
 
     // update data
     let dataFiltered = dataPopPhen.filter(function(d){
@@ -85,21 +86,63 @@ d3.json("data/mutations_bg.json").then( data => {
         .data(popKeys)
         .enter()
         .append('linearGradient')
+        .attr("gradientUnits", "userSpaceOnUse") 
         .attr('id', d => 'gradient_pop_' + d)
-        .attr('x1', 0)
+        .attr('x1', margin.left)
         .attr('y1', 0)
-        .attr('x2', '100%')
+        .attr('x2', chartWidth - margin.right)
         .attr('y2', 0);
- 
+    
+    console.log((xScale.range()[1]) * .01);
+    console.log(xScale.invert(7.8))
+    console.log(xScale(20000)/7.8)
+
+
+    console.log((xScale(20000) - 20)/7.8);
+    // 1000 + (x * 213) = 20000
+    console.log((20000 - 1000)/xScale.invert(7.8));
+    console.log(1000 + (xScale.invert(7.8)*2));
+    console.log((xScale(1000) + (7.8*2)));
+    console.log(xScale.invert(35.6))
+    console.log(((xScale(20000) - xScale(1000))/7.8))
+    console.log(312.1297749869179/800)
+    console.log((xScale(20000)/7.8))
+
+    console.log(xScale(390));
+    console.log(xScale.invert(780 * .50));
+    console.log(7.8 * 50);
+    console.log(xScale.invert(3*7.8));
+    console.log(xScale.invert(8));
+
+    console.log(1000 + (2*213.42105263157896))
+    // 5000 = 1000 + (x * 213.42105263157896)
+    let secondScale = d3.scaleLinear()
+        .domain([d3.min(dataPopPhen, d => d.output_gen), 
+            d3.max(dataPopPhen, d => d.output_gen)])
+        .range([0, 100]);
+
+    console.log(secondScale(20000));
+
+
+    svg.append('rect')
+        .attr('x', 27.8)
+        .attr('height', chartHeight)
+        .attr('width', 7.8 * 38)
+        .attr('stroke', 'green')
+        .attr('opacity', .1);
+
+    let startPerc = "8.16326530612245%" 
+    let endPerc = "38.775510204081634%";
 
     // define start and stop colors for gradient
-    let startGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "left").attr("offset", "40%");
-    let startColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "left").attr("offset", "40%");
-    let endColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "right").attr("offset", "60%");
-    let endGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "right").attr("offset", "60%");
+    let startGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "left").attr("offset", startPerc);
+    let startColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "left").attr("offset", startPerc);
+    let endColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "right").attr("offset", endPerc);
+    let endGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "right").attr("offset", endPerc);
 
+    // define axes
     let xAxis = g => g
-        .attr("transform", `translate(0,${chartHeight - padding *2})`)
+        .attr("transform", `translate(0,${chartHeight - margin.bottom})`)
         .call(d3.axisBottom(xScale));
     svg.append("g")
         .call(xAxis);
@@ -118,48 +161,59 @@ d3.json("data/mutations_bg.json").then( data => {
                 (d.values)
         });
 
-    let brush = d3.brushX()
-        .extent([[padding, padding], [chartWidth - padding, chartHeight - padding]])
-        .on('start brush end', brushed)
+    // let brush = d3.brushX()
+    //     .extent([[margin.left, margin.top], [chartWidth - margin.right, chartHeight - margin.bottom]])
+    //     .on('start brush end', brushed)
 
-    console.log(d3.max(dataPopPhen, d => d.output_gen) * .4)
-    console.log(d3.min(dataPopPhen, d => d.output_gen))
+    // console.log(brush.extent()[0])
+
+    // let contextStart = (chartWidth * .4);
+    // let contextEnd = (chartWidth * .6) - margin.left + margin.right;
+    // let maxVal = d3.max(dataPopPhen, d => d.output_gen);
     
-    let initStart = (d3.max(dataPopPhen, d => d.output_gen) * .4) + 1000 * .6;
-    let initEnd = padding + (d3.max(dataPopPhen, d => d.output_gen) * .6) + 1000 * .4;
-    svg.append('g')
-        .call(brush)
-        .call(brush.move, [initStart, initEnd].map(xScale))
-        .call(g => g.select('.overlay'))
-        .datum({type: 'selection'})
-        .on('mousedown touchstart', beforebrushstarted)
+    // let initStart = (d3.max(dataPopPhen, d => d.output_gen) * .4) + 1000 * .6;
+    // let initEnd = padding + (d3.max(dataPopPhen, d => d.output_gen) * .6) + 1000 * .4;
 
-    function beforebrushstarted() {
-        let dx = xScale(2000) - xScale(1000);
-        let [cx] = d3.mouse(this);
-        let [x0, x1] = [cx - dx / 2, cx + dx / 2];
-        let [X0, X1] = xScale.range();
-        d3.select(this.parentNode)
-            .call(brush.move, x1 > X1 ? [X1 - dx, X1] 
-                : x0 < X0 ? [X0, X0 + dx] 
-                : [x0, x1]);
+    // // console.log(xScale(initStart))
+    // // console.log(xScale.invert(contextStart))
+    // // console.log((xScale(20000) + margin.left)/chartWidth);
 
-    }
+    // svg.append('g')
+    //     .call(brush)
+    //     .call(brush.move, [1000, 5000].map(xScale))
+    //     .call(g => g.select('.overlay'))
+    //     .datum({type: 'selection'})
+    //     .on('mousedown touchstart', beforebrushstarted)
 
-    function brushed() {
-        const selection = d3.event.selection;
-        if (selection === null) {
-            return;
+    // function beforebrushstarted() {
+    //     const dx = xScale(1000) - xScale(1000); // Use a fixed width when recentering.
+    //     console.log(dx);
+    //     const [cx] = d3.mouse(this);
+    //     const [x0, x1] = [cx - dx / 2, cx + dx / 2];
+    //     const [X0, X1] = x.range();
+    //     d3.select(this.parentNode)
+    //         .call(brush.move, x1 > X1 ? [X1 - dx, X1] 
+    //             : x0 < X0 ? [X0, X0 + dx] 
+    //             : [x0, x1]);
+    //     }
 
-        } else {
-          let [x0, x1] = selection.map(xScale.invert);
-          d3.selectAll('.left').attr('offset', (x0/50000)*100 + "%");
-          d3.selectAll('.right').attr('offset', (x1/50000)*100 + "%");
 
-        //   d3.selectAll(".left").attr("offset", x1/40000 + "%")
-        //   d3.selectAll(".right").attr("offset",  x1/40000 + "%");
-        }
-      }
+    // let gradStart = ((xScale(20000) - margin.left)/chartWidth) * 100;
+    // // console.log(gradStart);
+
+    // function brushed() {
+    //     let selection = d3.event.selection;
+    //     if (selection === null) {
+
+    //     } else {
+    //       let [x0, x1] = selection.map(xScale.invert);
+    //       console.log(x0 + "," + x1);
+    //       console.log((xScale(x0) + margin.left)/chartWidth);
+    //       d3.selectAll('.left').attr('offset', (((xScale(x0) + margin.left)/chartWidth) * 100 ) - 5 + "%");
+    //       d3.selectAll('.right').attr('offset', (((xScale(x1) + margin.left)/chartWidth) * 100 ) - 5 + "%");
+
+    //     }
+    //   }
 
 
 });
