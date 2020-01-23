@@ -161,59 +161,59 @@ d3.json("data/mutations_bg.json").then( data => {
                 (d.values)
         });
 
-    // let brush = d3.brushX()
-    //     .extent([[margin.left, margin.top], [chartWidth - margin.right, chartHeight - margin.bottom]])
-    //     .on('start brush end', brushed)
+    let brush = d3.brushX()
+        .extent([[margin.left, margin.top], [chartWidth - margin.right, chartHeight - margin.bottom]])
+        .on('start brush end', brushed)
 
-    // console.log(brush.extent()[0])
+    console.log(brush.extent()[0])
 
-    // let contextStart = (chartWidth * .4);
-    // let contextEnd = (chartWidth * .6) - margin.left + margin.right;
-    // let maxVal = d3.max(dataPopPhen, d => d.output_gen);
+    let contextStart = (chartWidth * .4);
+    let contextEnd = (chartWidth * .6) - margin.left + margin.right;
+    let maxVal = d3.max(dataPopPhen, d => d.output_gen);
     
-    // let initStart = (d3.max(dataPopPhen, d => d.output_gen) * .4) + 1000 * .6;
-    // let initEnd = padding + (d3.max(dataPopPhen, d => d.output_gen) * .6) + 1000 * .4;
+    let initStart = (d3.max(dataPopPhen, d => d.output_gen) * .4) + 1000 * .6;
+    let initEnd = padding + (d3.max(dataPopPhen, d => d.output_gen) * .6) + 1000 * .4;
 
-    // // console.log(xScale(initStart))
-    // // console.log(xScale.invert(contextStart))
-    // // console.log((xScale(20000) + margin.left)/chartWidth);
+    // console.log(xScale(initStart))
+    // console.log(xScale.invert(contextStart))
+    // console.log((xScale(20000) + margin.left)/chartWidth);
 
-    // svg.append('g')
-    //     .call(brush)
-    //     .call(brush.move, [1000, 5000].map(xScale))
-    //     .call(g => g.select('.overlay'))
-    //     .datum({type: 'selection'})
-    //     .on('mousedown touchstart', beforebrushstarted)
+    svg.append('g')
+        .call(brush)
+        .call(brush.move, [1000, 5000].map(xScale))
+        .call(g => g.select('.overlay'))
+        .datum({type: 'selection'})
+        .on('mousedown touchstart', beforebrushstarted)
 
-    // function beforebrushstarted() {
-    //     const dx = xScale(1000) - xScale(1000); // Use a fixed width when recentering.
-    //     console.log(dx);
-    //     const [cx] = d3.mouse(this);
-    //     const [x0, x1] = [cx - dx / 2, cx + dx / 2];
-    //     const [X0, X1] = x.range();
-    //     d3.select(this.parentNode)
-    //         .call(brush.move, x1 > X1 ? [X1 - dx, X1] 
-    //             : x0 < X0 ? [X0, X0 + dx] 
-    //             : [x0, x1]);
-    //     }
+    function beforebrushstarted() {
+        const dx = xScale(1000) - xScale(1000); // Use a fixed width when recentering.
+        console.log(dx);
+        const [cx] = d3.mouse(this);
+        const [x0, x1] = [cx - dx / 2, cx + dx / 2];
+        const [X0, X1] = x.range();
+        d3.select(this.parentNode)
+            .call(brush.move, x1 > X1 ? [X1 - dx, X1] 
+                : x0 < X0 ? [X0, X0 + dx] 
+                : [x0, x1]);
+        }
 
 
-    // let gradStart = ((xScale(20000) - margin.left)/chartWidth) * 100;
-    // // console.log(gradStart);
+    let gradStart = ((xScale(20000) - margin.left)/chartWidth) * 100;
+    // console.log(gradStart);
 
-    // function brushed() {
-    //     let selection = d3.event.selection;
-    //     if (selection === null) {
+    function brushed() {
+        let selection = d3.event.selection;
+        if (selection === null) {
 
-    //     } else {
-    //       let [x0, x1] = selection.map(xScale.invert);
-    //       console.log(x0 + "," + x1);
-    //       console.log((xScale(x0) + margin.left)/chartWidth);
-    //       d3.selectAll('.left').attr('offset', (((xScale(x0) + margin.left)/chartWidth) * 100 ) - 5 + "%");
-    //       d3.selectAll('.right').attr('offset', (((xScale(x1) + margin.left)/chartWidth) * 100 ) - 5 + "%");
+        } else {
+          let [x0, x1] = selection.map(xScale.invert);
+          console.log(x0 + "," + x1);
+          console.log((xScale(x0) + margin.left)/chartWidth);
+          d3.selectAll('.left').attr('offset', secondScale(x0) + "%");
+          d3.selectAll('.right').attr('offset', secondScale(x1) + "%");
 
-    //     }
-    //   }
+        }
+      }
 
 
 });
