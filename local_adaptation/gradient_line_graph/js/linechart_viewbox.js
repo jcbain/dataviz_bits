@@ -11,6 +11,7 @@ const popSize = 1000;
 // PLOTTING VARIABLES
 let chartWidth = 800,
     chartHeight = 100,
+    chartHeightMain = 800,
     padding = 10;
 
 let margin = {top: 10, right: 20, bottom: 20, left: 20};
@@ -49,8 +50,11 @@ d3.json("data/mutations_bg.json").then( data => {
     // PLOTTING HAPPENS HERE |
     // ********************* V
 
+    let mainSVG = d3.select("#line-chart-main")
+        .append('svg')
+        .attr('viewbox', [0, 0, chartWidth, chartHeightMain]);
 
-    let svg = d3.select('#line-chart')
+    let contextSVG = d3.select('#line-chart')
         .append('svg')
         .attr("viewBox", [0, 0, chartWidth, chartHeight]);
 
@@ -66,6 +70,14 @@ d3.json("data/mutations_bg.json").then( data => {
             d3.max(dataPopPhen, d => d.pop_phen)
         ])
         .range([chartHeight - margin.bottom, margin.top]);
+    
+    let xScaleMain = d3.scaleLinear();
+    let yScaleMain = d3.scaleLinear();
+
+    let brushContextScale = d3.scaleLinear()
+        .domain([d3.min(dataPopPhen, d => d.output_gen), 
+            d3.max(dataPopPhen, d => d.output_gen)])
+        .range([0, 100]);
 
     // update data
     let dataFiltered = dataPopPhen.filter(function(d){
@@ -82,7 +94,7 @@ d3.json("data/mutations_bg.json").then( data => {
         .domain(popKeys)
         .range(['#e41a1c','#377eb8','#4daf4a']);
 
-    let gradients = svg.selectAll('defs')
+    let gradients = contextSVG.selectAll('defs')
         .data(popKeys)
         .enter()
         .append('linearGradient')
@@ -93,34 +105,44 @@ d3.json("data/mutations_bg.json").then( data => {
         .attr('x2', chartWidth - margin.right)
         .attr('y2', 0);
     
-    let brushContextScale = d3.scaleLinear()
-        .domain([d3.min(dataPopPhen, d => d.output_gen), 
-            d3.max(dataPopPhen, d => d.output_gen)])
-        .range([0, 100]);
 
-    let startPerc = "10%" 
-    let endPerc = "20%";
 
     // define start and stop colors for gradient
-    let startGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "left").attr("offset", startPerc);
-    let startColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "left").attr("offset", startPerc);
-    let endColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "right").attr("offset", endPerc);
-    let endGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "right").attr("offset", endPerc);
+    let startGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "left");
+    let startColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "left");
+    let endColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "right");
+    let endGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "right");
 
     // define axes
     let xAxis = g => g
         .attr("transform", `translate(0,${chartHeight - margin.bottom})`)
         .call(d3.axisBottom(xScale));
-    svg.append("g")
-        .call(xAxis);
 
-    let line = svg.selectAll('.line')
+
+    // let line = contextSVG.selectAll('.line')
+    //     .data(dataGrouped)
+    //     .enter()
+    //     .append('path')
+    //     .attr('fill', 'none')
+    //     .attr('stroke-width', 1.5)
+    //     .attr('stroke', d => 'url(#gradient_pop_' + d.key +')')
+    //     .attr('class', 'line')
+    //     .attr('d', function(d){
+    //         return d3.line()
+    //             .x( d => xScale(d.output_gen))
+    //             .y( d => yScale(d.pop_phen))
+    //             (d.values)
+    //     });
+
+    let line = contextSVG.append('g')
+        .selectAll('.line')
         .data(dataGrouped)
         .enter()
         .append('path')
         .attr('fill', 'none')
         .attr('stroke-width', 1.5)
         .attr('stroke', d => 'url(#gradient_pop_' + d.key +')')
+        .attr('class', 'line')
         .attr('d', function(d){
             return d3.line()
                 .x( d => xScale(d.output_gen))
@@ -128,29 +150,35 @@ d3.json("data/mutations_bg.json").then( data => {
                 (d.values)
         });
 
+
+    contextSVG.append("g")
+        .call(xAxis);
+
     let brush = d3.brushX()
         .extent([[margin.left, margin.top], [chartWidth - margin.right, chartHeight - margin.bottom]])
-        .on('start brush end', brushed)
+        .on('start brush end', brushed);
 
-    svg.append('g')
+    contextSVG.append('g')
         .call(brush)
         .call(brush.move, [1000, 5000].map(xScale))
-        .call(g => g.select('.overlay'))
-        .datum({type: 'selection'})
-        .on('mousedown touchstart', beforebrushstarted)
+        .call(g => g.select('.overlay')
+            .datum({type: 'selection'})
+            .on("mousedown touchstart", beforebrushstarted));
 
     function beforebrushstarted() {
-        const dx = xScale(4000) - xScale(1000); // Use a fixed width when recentering.
-        const [cx] = d3.mouse(this);
-        const [x0, x1] = [cx - dx / 2, cx + dx / 2];
-        const [X0, X1] = xScale.range();
-        d3.select(this)
+        let dx = xScale(4000) - xScale(1000); // Use a fixed width when recentering.
+        let [cx] = d3.mouse(this);
+        let [x0, x1] = [cx - dx / 2, cx + dx / 2];
+        let [X0, X1] = xScale.range();
+        d3.select(this.parentNode)
             .call(brush.move, x1 > X1 ? [X1 - dx, X1] 
                 : x0 < X0 ? [X0, X0 + dx] 
                 : [x0, x1]);
+
         }
 
     function brushed() {
+        console.log(d3.event);
         let selection = d3.event.selection;
         if (selection === null) {
             d3.selectAll('.left').attr('offset', "0%");
