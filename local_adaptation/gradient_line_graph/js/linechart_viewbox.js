@@ -50,11 +50,11 @@ d3.json("data/mutations_bg.json").then( data => {
     // PLOTTING HAPPENS HERE |
     // ********************* V
 
-    let mainSVG = d3.select("#line-chart-main")
+    let focusSVG = d3.select("#line-chart-focus")
         .append('svg')
         .attr('viewbox', [0, 0, chartWidth, chartHeightMain]);
 
-    let contextSVG = d3.select('#line-chart')
+    let contextSVG = d3.select('#line-chart-context')
         .append('svg')
         .attr("viewBox", [0, 0, chartWidth, chartHeight]);
 
@@ -80,6 +80,9 @@ d3.json("data/mutations_bg.json").then( data => {
             d3.max(dataPopPhen, d => d.output_gen)])
         .range([0, 100]);
 
+    console.log(d3.nest()
+    .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr]).entries(dataPopPhen));
+
     // update data
     let dataFiltered = dataPopPhen.filter(function(d){
         return d.mu == "1e-6" && d.r == "1e-6" && d.sigsqr == "5" && d.m == "1e-4";
@@ -91,9 +94,13 @@ d3.json("data/mutations_bg.json").then( data => {
 
 
     let popKeys = dataGrouped.map( d => d.key );
-    let color = d3.scaleOrdinal()
+    let focusColor = d3.scaleOrdinal()
         .domain(popKeys)
-        .range(['#e41a1c','#377eb8','#4daf4a']);
+        .range(['#ba3252','#3277a8','#4daf4a']);
+
+    let outsideColor = d3.scaleOrdinal()
+        .domain(popKeys)
+        .range(['#dbafba', '#b4cbdb', '#89b388'])
 
     let gradients = contextSVG.selectAll('defs')
         .data(popKeys)
@@ -109,25 +116,47 @@ d3.json("data/mutations_bg.json").then( data => {
 
 
     // define start and stop colors for gradient
-    let startGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "left");
-    let startColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "left");
-    let endColor = gradients.append('stop').attr('stop-color', d => color(d)).attr("class", "right");
-    let endGrey = gradients.append('stop').attr('stop-color', '#D6D6D6').attr("class", "right");
+    let startDull = gradients.append('stop').attr('stop-color', d => outsideColor(d)).attr("class", "left");
+    let startColor = gradients.append('stop').attr('stop-color', d => focusColor(d)).attr("class", "left");
+    let endColor = gradients.append('stop').attr('stop-color', d => focusColor(d)).attr("class", "right");
+    let endDull = gradients.append('stop').attr('stop-color', d => outsideColor(d)).attr("class", "right");
 
     // define axes
     let xAxis = g => g
         .attr("transform", `translate(0,${chartHeight - margin.bottom})`)
         .call(d3.axisBottom(xScale));
 
+    function nonColor(k) {
+        return "#dcddde";
+    }
 
-    let line = contextSVG.selectAll('.line')
+    let nonFocusLines = contextSVG.selectAll('.non-focus-line')
+        .data(d3.nest()
+            .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr]).entries(dataPopPhen))
+        .enter()
+        .append('path')
+        .attr('fill', 'none')
+        .attr('stroke-width', 2)
+        .attr('stroke', d => nonColor(d.key))
+        .attr('class', 'non-focus-line')
+        .attr('d', function(d){
+            return d3.line()
+                .x(d => xScale(d.output_gen))
+                .y(d => yScale(d.pop_phen))
+                (d.values)
+        });
+
+    console.log(dataGrouped);
+
+
+    let contextLines = contextSVG.selectAll('.context-line')
         .data(dataGrouped)
         .enter()
         .append('path')
         .attr('fill', 'none')
-        .attr('stroke-width', 1.5)
+        .attr('stroke-width', 2.5)
         .attr('stroke', d => 'url(#gradient_pop_' + d.key +')')
-        .attr('class', 'line')
+        .attr('class', 'context-line')
         .attr('d', function(d){
             return d3.line()
                 .x( d => xScale(d.output_gen))
@@ -163,7 +192,7 @@ d3.json("data/mutations_bg.json").then( data => {
         }
 
     function brushed() {
-        console.log(d3.event);
+        // console.log(d3.event);
         let selection = d3.event.selection;
         if (selection === null) {
             d3.selectAll('.left').attr('offset', "0%");

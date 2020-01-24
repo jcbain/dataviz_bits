@@ -34,9 +34,22 @@ p {
     justify-content: center;
 }
 
-#line-chart {
+#line-chart-focus {
+    width: 80vw;
+    height: 60vh;
+    padding-left: 10vw;
+    padding-right: 10vw;
+}
+
+#line-chart-context {
     width: 80vw;
     height: 20vh;
     padding-left: 10vw;
     padding-right: 10vw;
+}
+
+.selection {
+    fill: none;
+    stroke: black;
+    stroke-width: .25vw;
 }
