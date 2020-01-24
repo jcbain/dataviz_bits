@@ -74,6 +74,7 @@ d3.json("data/mutations_bg.json").then( data => {
     let xScaleMain = d3.scaleLinear();
     let yScaleMain = d3.scaleLinear();
 
+    // the scale to determine the brush context percentage range
     let brushContextScale = d3.scaleLinear()
         .domain([d3.min(dataPopPhen, d => d.output_gen), 
             d3.max(dataPopPhen, d => d.output_gen)])
@@ -119,23 +120,7 @@ d3.json("data/mutations_bg.json").then( data => {
         .call(d3.axisBottom(xScale));
 
 
-    // let line = contextSVG.selectAll('.line')
-    //     .data(dataGrouped)
-    //     .enter()
-    //     .append('path')
-    //     .attr('fill', 'none')
-    //     .attr('stroke-width', 1.5)
-    //     .attr('stroke', d => 'url(#gradient_pop_' + d.key +')')
-    //     .attr('class', 'line')
-    //     .attr('d', function(d){
-    //         return d3.line()
-    //             .x( d => xScale(d.output_gen))
-    //             .y( d => yScale(d.pop_phen))
-    //             (d.values)
-    //     });
-
-    let line = contextSVG.append('g')
-        .selectAll('.line')
+    let line = contextSVG.selectAll('.line')
         .data(dataGrouped)
         .enter()
         .append('path')
@@ -163,9 +148,9 @@ d3.json("data/mutations_bg.json").then( data => {
         .call(brush.move, [1000, 5000].map(xScale))
         .call(g => g.select('.overlay')
             .datum({type: 'selection'})
-            .on("mousedown touchstart", beforebrushstarted));
+            .on("mousedown touchstart", centerAroundTouch));
 
-    function beforebrushstarted() {
+    function centerAroundTouch() {
         let dx = xScale(4000) - xScale(1000); // Use a fixed width when recentering.
         let [cx] = d3.mouse(this);
         let [x0, x1] = [cx - dx / 2, cx + dx / 2];
