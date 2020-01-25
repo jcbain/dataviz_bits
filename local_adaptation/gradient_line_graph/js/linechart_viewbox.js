@@ -14,7 +14,7 @@ let chartWidth = 800,
     chartHeightMain = 300,
     padding = 10;
 
-let margin = {top: 10, right: 0, bottom: 20, left: 0};
+let margin = {top: 10, right: 20, bottom: 20, left: 20};
 
 d3.json("data/mutations_bg.json").then( data => {
 
@@ -87,6 +87,10 @@ d3.json("data/mutations_bg.json").then( data => {
             d3.max(dataPopPhen, d => d.output_gen)])
         .range([0, 100]);
 
+    let focusScale = d3.scaleLinear()
+            .domain([0, chartWidth])
+            .range([0, 100]);
+
     console.log(d3.nest()
     .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr]).entries(dataPopPhen));
 
@@ -109,7 +113,8 @@ d3.json("data/mutations_bg.json").then( data => {
         .domain(popKeys)
         .range(['#dbafba', '#b4cbdb', '#89b388'])
 
-    let gradients = contextSVG.selectAll('defs')
+    let gradients = contextSVG.selectAll('.context-gradient')
+        .append('defs')
         .data(popKeys)
         .enter()
         .append('linearGradient')
@@ -119,14 +124,36 @@ d3.json("data/mutations_bg.json").then( data => {
         .attr('y1', 0)
         .attr('x2', chartWidth - margin.right)
         .attr('y2', 0);
-    
 
+    let focusGradients = focusSVG.selectAll('.focus-gradient')
+        .append('defs')
+        .data(popKeys)
+        .enter()
+        .append('linearGradient')
+        .attr('gradientUnits', 'userSpaceOnUse')
+        .attr('id', d => 'focus_gradient_pop_' + d)
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', chartWidth)
+        .attr('y2', 0);
+
+    
 
     // define start and stop colors for gradient
     let startDull = gradients.append('stop').attr('stop-color', d => outsideColor(d)).attr("class", "left");
     let startColor = gradients.append('stop').attr('stop-color', d => focusColor(d)).attr("class", "left");
     let endColor = gradients.append('stop').attr('stop-color', d => focusColor(d)).attr("class", "right");
     let endDull = gradients.append('stop').attr('stop-color', d => outsideColor(d)).attr("class", "right");
+
+    let startZoomNoColor = focusGradients.append('stop').attr('stop-color', '#fff').attr('class', 'left')
+        .attr('offset', focusScale(margin.left) + "%");
+    let startZoomColor = focusGradients.append('stop').attr('stop-color', d => focusColor(d)).attr('class', 'left')
+        .attr('offset', focusScale(margin.left) + "%");
+    let endZoomColor = focusGradients.append('stop').attr('stop-color', d => focusColor(d)).attr('class', 'right')
+        .attr('offset', focusScale(chartWidth - margin.right) + "%");
+    let endZoomNoColor = focusGradients.append('stop').attr('stop-color', '#fff').attr('class', 'right')
+        .attr('offset', focusScale(chartWidth - margin.right) + "%");
+
 
     // define axes
     let xAxis = g => g
@@ -177,7 +204,7 @@ d3.json("data/mutations_bg.json").then( data => {
         .append('path')
         .attr('fill', 'none')
         .attr('stroke-width', 5)
-        .attr('stroke', d => focusColor(d.key))
+        .attr('stroke', d => 'url(#focus_gradient_pop_' + d.key +')')
         .attr('class', 'main-focus-line')
         .attr('d', function(d){
             return d3.line()
@@ -220,8 +247,11 @@ d3.json("data/mutations_bg.json").then( data => {
             d3.selectAll('.right').attr('offset', "0%");
         } else {
           let [x0, x1] = selection.map(xScale.invert);
-          d3.selectAll('.left').attr('offset', brushContextScale(x0) + "%");
-          d3.selectAll('.right').attr('offset', brushContextScale(x1) + "%");
+          startDull.attr('offset', brushContextScale(x0) + "%");
+          startColor.attr('offset', brushContextScale(x0) + "%");
+          endColor.attr('offset', brushContextScale(x1) + "%");
+          endDull.attr('offset', brushContextScale(x1) + "%");
+
           console.log(x0 + "," + x1);
           xScaleMain
             .domain([x0, x1]);
