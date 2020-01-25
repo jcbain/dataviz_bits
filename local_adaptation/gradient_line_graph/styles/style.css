@@ -35,17 +35,18 @@ p {
 }
 
 #line-chart-focus {
-    width: 80vw;
-    height: 60vh;
-    padding-left: 10vw;
-    padding-right: 10vw;
+    width: 70vw;
+    height: 100%;
+    padding-left: 15vw;
+    padding-right: 15vw;
+    margin-bottom: 5vh;
 }
 
 #line-chart-context {
-    width: 80vw;
-    height: 20vh;
-    padding-left: 10vw;
-    padding-right: 10vw;
+    width: 70vw;
+    height: 100%;
+    padding-left: 15vw;
+    padding-right: 15vw;
 }
 
 .selection {

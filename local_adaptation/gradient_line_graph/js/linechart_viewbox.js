@@ -11,10 +11,10 @@ const popSize = 1000;
 // PLOTTING VARIABLES
 let chartWidth = 800,
     chartHeight = 100,
-    chartHeightMain = 800,
+    chartHeightMain = 300,
     padding = 10;
 
-let margin = {top: 10, right: 20, bottom: 20, left: 20};
+let margin = {top: 10, right: 0, bottom: 20, left: 0};
 
 d3.json("data/mutations_bg.json").then( data => {
 
@@ -52,7 +52,7 @@ d3.json("data/mutations_bg.json").then( data => {
 
     let focusSVG = d3.select("#line-chart-focus")
         .append('svg')
-        .attr('viewbox', [0, 0, chartWidth, chartHeightMain]);
+        .attr('viewBox', [0, 0, chartWidth, chartHeightMain]);
 
     let contextSVG = d3.select('#line-chart-context')
         .append('svg')
@@ -71,8 +71,15 @@ d3.json("data/mutations_bg.json").then( data => {
         ])
         .range([chartHeight - margin.bottom, margin.top]);
     
-    let xScaleMain = d3.scaleLinear();
-    let yScaleMain = d3.scaleLinear();
+    let xScaleMain = d3.scaleLinear()
+        .range([margin.left, chartWidth - margin.right]);
+
+    let yScaleMain = d3.scaleLinear()
+        .domain([
+            d3.min(dataPopPhen, d => d.pop_phen),
+            d3.max(dataPopPhen, d => d.pop_phen)
+        ])
+        .range([chartHeightMain - margin.bottom, margin.top]);
 
     // the scale to determine the brush context percentage range
     let brushContextScale = d3.scaleLinear()
@@ -164,6 +171,20 @@ d3.json("data/mutations_bg.json").then( data => {
                 (d.values)
         });
 
+    let mainFocusLines = focusSVG.selectAll('.main-focus-line')
+        .data(dataGrouped)
+        .enter()
+        .append('path')
+        .attr('fill', 'none')
+        .attr('stroke-width', 5)
+        .attr('stroke', d => focusColor(d.key))
+        .attr('class', 'main-focus-line')
+        .attr('d', function(d){
+            return d3.line()
+                .y( d => yScaleMain(d.pop_phen))
+                (d.values)
+        });
+
 
     contextSVG.append("g")
         .call(xAxis);
@@ -201,6 +222,19 @@ d3.json("data/mutations_bg.json").then( data => {
           let [x0, x1] = selection.map(xScale.invert);
           d3.selectAll('.left').attr('offset', brushContextScale(x0) + "%");
           d3.selectAll('.right').attr('offset', brushContextScale(x1) + "%");
+          console.log(x0 + "," + x1);
+          xScaleMain
+            .domain([x0, x1]);
+
+
+          mainFocusLines
+            .transition()
+            .attr('d', function(d){
+                return d3.line()
+                    .x( d => xScaleMain(d.output_gen))
+                    .y( d => yScaleMain(d.pop_phen))
+                    (d.values)
+            });
 
         }
       }
