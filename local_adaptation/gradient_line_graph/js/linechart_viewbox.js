@@ -103,6 +103,14 @@ d3.json("data/mutations_bg.json").then( data => {
         .key( d => d.pop )
         .entries(dataFiltered);
 
+    let dataParamGroups = d3.nest()
+        .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr])
+        .entries(dataPopPhen);
+
+    console.log(dataParamGroups);
+
+    let paramKeys = dataParamGroups.map( d => d.key );
+    console.log(paramKeys);
 
     let popKeys = dataGrouped.map( d => d.key );
     let focusColor = d3.scaleOrdinal()
@@ -112,6 +120,10 @@ d3.json("data/mutations_bg.json").then( data => {
     let outsideColor = d3.scaleOrdinal()
         .domain(popKeys)
         .range(['#dbafba', '#b4cbdb', '#89b388'])
+
+    function nonColor(k) {
+        return "#dcddde";
+    }
 
     let gradients = contextSVG.selectAll('.context-gradient')
         .append('defs')
@@ -137,6 +149,18 @@ d3.json("data/mutations_bg.json").then( data => {
         .attr('x2', chartWidth)
         .attr('y2', 0);
 
+    let grayGradients = focusSVG.selectAll('.gray-gradient')
+        .append('defs')
+        .data(paramKeys)
+        .enter()
+        .append('linearGradient')
+        .attr('gradientUnits', 'userSpaceOnUse')
+        .attr('id', d => 'gray_gradient_pop_' + d)
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', chartWidth)
+        .attr('y2', 0);
+
     
 
     // define start and stop colors for gradient
@@ -154,15 +178,21 @@ d3.json("data/mutations_bg.json").then( data => {
     let endZoomNoColor = focusGradients.append('stop').attr('stop-color', '#fff').attr('class', 'right')
         .attr('offset', focusScale(chartWidth - margin.right) + "%");
 
+    let startGrayNoColor = grayGradients.append('stop').attr('stop-color', '#fff').attr('class', 'left')
+        .attr('offset', focusScale(margin.left) + "%");
+    let startGrayColor = grayGradients.append('stop').attr('stop-color', d => nonColor(d)).attr('class', 'left')
+        .attr('offset', focusScale(margin.left) + "%");
+    let endGrayColor = grayGradients.append('stop').attr('stop-color', d => nonColor(d)).attr('class', 'right')
+        .attr('offset', focusScale(chartWidth - margin.right) + "%");
+    let endGrayNoColor = grayGradients.append('stop').attr('stop-color', '#fff').attr('class', 'right')
+        .attr('offset', focusScale(chartWidth - margin.right) + "%");
+
 
     // define axes
     let xAxis = g => g
         .attr("transform", `translate(0,${chartHeight - margin.bottom})`)
         .call(d3.axisBottom(xScale));
 
-    function nonColor(k) {
-        return "#dcddde";
-    }
 
     let nonFocusLines = contextSVG.selectAll('.non-focus-line')
         .data(d3.nest()
@@ -195,6 +225,22 @@ d3.json("data/mutations_bg.json").then( data => {
             return d3.line()
                 .x( d => xScale(d.output_gen))
                 .y( d => yScale(d.pop_phen))
+                (d.values)
+        });
+
+    let mainNonFocusLines = focusSVG.selectAll('.main-non-focus-line')
+        .data(d3.nest()
+            .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr])
+            .entries(dataPopPhen))
+        .enter()
+        .append('path')
+        .attr('fill', 'none')
+        .attr('stroke-width', 3)
+        .attr('stroke', d => 'url(#gray_gradient_pop_' + d.key +')')
+        .attr('class', 'main-non-focus-line')
+        .attr('d', function(d){
+            return d3.line()
+                .y(d => xScaleMain(d.pop_phen))
                 (d.values)
         });
 
@@ -265,6 +311,16 @@ d3.json("data/mutations_bg.json").then( data => {
                     .y( d => yScaleMain(d.pop_phen))
                     (d.values)
             });
+
+          mainNonFocusLines
+            .transition()
+            .attr('d', function(d){
+                return d3.line()
+                    .x( d => xScaleMain(d.output_gen))
+                    .y( d => yScaleMain(d.pop_phen))
+                    (d.values)
+            });
+            
 
         }
       }
