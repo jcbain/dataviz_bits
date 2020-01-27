@@ -91,8 +91,6 @@ d3.json("data/mutations_bg.json").then( data => {
             .domain([0, chartWidth])
             .range([0, 100]);
 
-    console.log(d3.nest()
-    .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr]).entries(dataPopPhen));
 
     // update data
     let dataFiltered = dataPopPhen.filter(function(d){
@@ -107,10 +105,8 @@ d3.json("data/mutations_bg.json").then( data => {
         .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr])
         .entries(dataPopPhen);
 
-    console.log(dataParamGroups);
 
     let paramKeys = dataParamGroups.map( d => d.key );
-    console.log(paramKeys);
 
     let popKeys = dataGrouped.map( d => d.key );
     let focusColor = d3.scaleOrdinal()
@@ -210,9 +206,6 @@ d3.json("data/mutations_bg.json").then( data => {
                 (d.values)
         });
 
-    console.log(dataGrouped);
-
-
     let contextLines = contextSVG.selectAll('.context-line')
         .data(dataGrouped)
         .enter()
@@ -240,7 +233,7 @@ d3.json("data/mutations_bg.json").then( data => {
         .attr('class', 'main-non-focus-line')
         .attr('d', function(d){
             return d3.line()
-                .y(d => xScaleMain(d.pop_phen))
+                .y(d => yScaleMain(d.pop_phen))
                 (d.values)
         });
 
@@ -292,34 +285,34 @@ d3.json("data/mutations_bg.json").then( data => {
             d3.selectAll('.left').attr('offset', "0%");
             d3.selectAll('.right').attr('offset', "0%");
         } else {
-          let [x0, x1] = selection.map(xScale.invert);
-          startDull.attr('offset', brushContextScale(x0) + "%");
-          startColor.attr('offset', brushContextScale(x0) + "%");
-          endColor.attr('offset', brushContextScale(x1) + "%");
-          endDull.attr('offset', brushContextScale(x1) + "%");
+            let [x0, x1] = selection.map(xScale.invert);
+            startDull.attr('offset', brushContextScale(x0) + "%");
+            startColor.attr('offset', brushContextScale(x0) + "%");
+            endColor.attr('offset', brushContextScale(x1) + "%");
+            endDull.attr('offset', brushContextScale(x1) + "%");
 
-          console.log(x0 + "," + x1);
-          xScaleMain
-            .domain([x0, x1]);
+            console.log(x0 + "," + x1);
+            xScaleMain
+                .domain([x0, x1]);
 
 
-          mainFocusLines
-            .transition()
-            .attr('d', function(d){
-                return d3.line()
-                    .x( d => xScaleMain(d.output_gen))
-                    .y( d => yScaleMain(d.pop_phen))
-                    (d.values)
-            });
+            mainFocusLines
+                .transition()
+                .attr('d', function(d){
+                    return d3.line()
+                        .x( d => xScaleMain(d.output_gen))
+                        .y( d => yScaleMain(d.pop_phen))
+                        (d.values)
+                });
 
-          mainNonFocusLines
-            .transition()
-            .attr('d', function(d){
-                return d3.line()
-                    .x( d => xScaleMain(d.output_gen))
-                    .y( d => yScaleMain(d.pop_phen))
-                    (d.values)
-            });
+            mainNonFocusLines
+                .transition()
+                .attr('d', function(d){
+                    return d3.line()
+                        .x( d => xScaleMain(d.output_gen))
+                        .y( d => yScaleMain(d.pop_phen))
+                        (d.values)
+                });
             
 
         }
