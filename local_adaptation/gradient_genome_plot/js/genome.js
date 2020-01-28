@@ -6,7 +6,7 @@ Array.prototype.unique = function() {
 
 // PLOTTING VARIABLES
 let chartWidth = 800,
-    chartHeight = 800;
+    chartHeight = 400;
 
 let margin = {top: 10, right: 20, bottom: 20, left: 20};
 
@@ -21,9 +21,14 @@ Promise.all([
         d['positional_phen'] = d.freq * d.select_coef;
     })
 
+    console.log(d3.min(data, d => Math.abs(d.positional_phen)));
+    console.log(d3.max(data, d => Math.abs(d.positional_phen)));
+
+
+
 
     let dataFiltered = data.filter(function(d){
-        return d.mu == "1e-6" && d.r == "1e-6" && d.sigsqr == "5" && d.m == "1e-4" && d.output_gen == 50000 && d.pop == 0;
+        return d.mu == "1e-6" && d.r == "1e-6" && d.sigsqr == "5" && d.m == "1e-3" && d.output_gen == 50000 && d.pop == 0;
     }) 
 
     // TODO: I need to figure out how to handle mutations at the same
@@ -53,6 +58,10 @@ Promise.all([
         .domain([0, dataCurrentGenome.length])
         .range([0, 100]);
 
+    let opacityScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => Math.abs(d.positional_phen))])
+        .range([0, 100]);
+
     // define gradients
     let gradients = chromeSVG.append('defs')
         .append('linearGradient')
@@ -74,6 +83,7 @@ Promise.all([
                 return 'white'
             }
         })
+        .attr('stop-opacity', d => opacityScale(Math.abs(d.positional_phen)) + "%")
         .attr('offset', (d, i) => yScale(i) + "%");
 
 
