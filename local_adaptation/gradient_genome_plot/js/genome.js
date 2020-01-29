@@ -22,6 +22,7 @@ Promise.all([
         d['positional_phen'] = d.freq * d.select_coef;
     })
 
+    // still want to find a better solution for this
     let mOpts = sampleFunct(data, [], 'm');
     let muOpts = sampleFunct(data, [], 'mu');
     let rOpts = sampleFunct(data, [], 'r');
