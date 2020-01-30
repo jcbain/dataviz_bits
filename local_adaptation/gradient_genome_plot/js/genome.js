@@ -99,11 +99,14 @@ Promise.all([
         .attr('x1', 0)
         .attr('y1', 0)
         .attr('x2', 0)
-        .attr('y2', chartHeight - margin.bottom)
-        .selectAll('stop')
+        .attr('y2', chartHeight - margin.bottom);
+    
+
+    let stops = gradients.selectAll('stop')
         .data(dataCurrentGenome)
         .enter()
-        .append('stop').attr('stop-color', d => {
+        .append('stop')
+        .attr('stop-color', d => {
             if( d.positional_phen > 0){
                 return '#ba3252'
             } else if(d.positional_phen < 0){
@@ -138,18 +141,44 @@ Promise.all([
         state.m = m;
         dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
 
-        dataCurrentGenome = [];
+        const dataNewGenome = [];
         dataGenomeTemplate.forEach(function(p){
             let result = dataFiltered.filter(function(d){
                 return d.position == p.position;
             })
             p.positional_phen = (result[0] !== undefined) ? result[0].positional_phen : 0;
-            dataCurrentGenome.push(p);
+            dataNewGenome.push(p);
         });
 
-        console.log(dataCurrentGenome);
+        console.log(dataNewGenome);
 
-})
+        stops
+            .data(dataNewGenome)
+            .transition()
+            .duration(1000)
+            .attr('stop-color', d => {
+                if( d.positional_phen > 0){
+                    return '#ba3252'
+                } else if(d.positional_phen < 0){
+                    return '#3277a8'
+                } else {
+                    return '#fffff7'
+                }
+            })
+            .attr('stop-opacity', d => {
+                if (d.positional_phen == 0) {
+                    return "100%"
+                } else{
+                    return opacityScale(Math.abs(d.positional_phen)) + "%"
+                }
+                })
+            .attr('offset', (d, i) => yScale(i) + "%");
+
+
+    };
+
+
+});
 
 // create a function to filter data
 function filterOnParams(row, mu, r, sigsqr, m, output_gen, pop) {
