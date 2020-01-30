@@ -22,18 +22,17 @@ Promise.all([
         d['positional_phen'] = d.freq * d.select_coef;
     })
 
+    function makeUniqueArray(param){
+        return data.map(d => d[param]).unique();
+    }
+
     // still want to find a better solution for this
-    let mOpts = sampleFunct(data, [], 'm');
-    let muOpts = sampleFunct(data, [], 'mu');
-    let rOpts = sampleFunct(data, [], 'r');
-    let sigsqrOpts = sampleFunct(data, [], 'sigsqr');
-    let outputGenOpts = sampleFunct(data, [], 'ouptput_gen');
-    let popOpts = sampleFunct(data, [], 'pop');
-
-
-
-    console.log(d3.min(data, d => Math.abs(d.positional_phen)));
-    console.log(d3.max(data, d => Math.abs(d.positional_phen)));
+    let mOpts = makeUniqueArray('m');
+    let muOpts = makeUniqueArray('mu');
+    let rOpts = makeUniqueArray('r');
+    let sigsqrOpts = makeUniqueArray('sigsqr');
+    let outputGenOpts = makeUniqueArray('output_gen');
+    let popOpts = makeUniqueArray('pop');
 
     d3.select('#genome-chart')
         .append('div')
@@ -48,14 +47,20 @@ Promise.all([
         .attr('value', d => d)
         .text(d => d);
 
-    initialParams = {mu: "1e-6", r: "1e-6", sigsqr: "5", m: "1e-3", output_gen: 50000, pop: 0}
+    state = {mu: "1e-6", r: "1e-6", sigsqr: "5", m: "1e-3", output_gen: 50000, pop: 0}
 
+    let mButtons = d3.selectAll('.migration-opts');
+    
+    mButtons.on('click', function() {
+            let opt = d3.select(this).property('value');
+            updateFilter(opt);
+    })
 
     // let dataFiltered = data.filter(function(d){
     //     return d.mu == "1e-6" && d.r == "1e-6" && d.sigsqr == "5" && d.m == "1e-3" && d.output_gen == 50000 && d.pop == 0;
     // }) 
 
-    let dataFiltered = data.filter(d => filterOnParams(d, initialParams.mu, initialParams.r, initialParams.sigsqr, initialParams.m, initialParams.output_gen, initialParams.pop));
+    let dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
 
     // TODO: I need to figure out how to handle mutations at the same
     //       location. Right now, it is just taking the first one, which is rather
@@ -68,8 +73,6 @@ Promise.all([
         p.positional_phen = (result[0] !== undefined) ? result[0].positional_phen : 0;
         dataCurrentGenome.push(p);
     });
-
-    console.log(dataCurrentGenome);
 
     // ********************* |
     // PLOTTING HAPPENS HERE |
@@ -118,7 +121,6 @@ Promise.all([
             })
         .attr('offset', (d, i) => yScale(i) + "%");
 
-
     // Draw the chromosome
     chromeSVG.append('rect')
         .attr('class', 'chrome')
@@ -131,14 +133,25 @@ Promise.all([
         .attr('stroke', '#c2c2ab')
         .style('fill', "url(#grads)");
 
+    // FUNCTIONS   
+    function updateFilter(m){
+        state.m = m;
+        dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
+
+        dataCurrentGenome = [];
+        dataGenomeTemplate.forEach(function(p){
+            let result = dataFiltered.filter(function(d){
+                return d.position == p.position;
+            })
+            p.positional_phen = (result[0] !== undefined) ? result[0].positional_phen : 0;
+            dataCurrentGenome.push(p);
+        });
+
+        console.log(dataCurrentGenome);
+
 })
 
 // create a function to filter data
 function filterOnParams(row, mu, r, sigsqr, m, output_gen, pop) {
     return row.mu === mu && row.m === m && row.r === r && row.sigsqr === sigsqr && row.output_gen === output_gen && row.pop === pop;
 };
-
-function sampleFunct(data, array, m){
-    data.forEach(d => array.push(d[m]));
-    return array.unique();
-}
