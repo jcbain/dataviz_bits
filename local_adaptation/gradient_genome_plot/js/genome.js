@@ -54,24 +54,6 @@ Promise.all([
 
     let mButtons = d3.selectAll('.migration-opts');
 
-    
-    mButtons.on('click', function() {
-            // remove active key
-            d3.selectAll('.migration-opts').classed('active', false);
-
-            // get button selected and give the active class
-            let selection = d3.select(this);
-            let opt = selection.property('value');
-            selection.classed('active', true);
-
-            // update
-            updateFilter(opt);
-    })
-
-    // let dataFiltered = data.filter(function(d){
-    //     return d.mu == "1e-6" && d.r == "1e-6" && d.sigsqr == "5" && d.m == "1e-3" && d.output_gen == 50000 && d.pop == 0;
-    // }) 
-
     let dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
 
     // TODO: I need to figure out how to handle mutations at the same
@@ -104,7 +86,7 @@ Promise.all([
         .range([0, 100]);
 
     // define gradients
-    let gradients = chromeSVG.append('defs')
+    let gradient = chromeSVG.append('defs')
         .append('linearGradient')
         .attr("gradientUnits", "userSpaceOnUse")
         .attr('id', 'grads')
@@ -113,8 +95,8 @@ Promise.all([
         .attr('x2', 0)
         .attr('y2', chartHeight - margin.bottom);
     
-
-    let stops = gradients.selectAll('stop')
+    // stops witin the gradients
+    let stops = gradient.selectAll('stop')
         .data(dataCurrentGenome)
         .enter()
         .append('stop')
@@ -147,6 +129,20 @@ Promise.all([
         .attr('width', 40)
         .attr('stroke', '#c2c2ab')
         .style('fill', "url(#grads)");
+    
+    // migration rate buttons
+    mButtons.on('click', function() {
+        // remove active key
+        d3.selectAll('.migration-opts').classed('active', false);
+
+        // get button selected and give the active class
+        let selection = d3.select(this);
+        let opt = selection.property('value');
+        selection.classed('active', true);
+
+        // update
+        updateFilter(opt);
+        })
 
     // FUNCTIONS   
     function updateFilter(m){
@@ -185,9 +181,9 @@ Promise.all([
                 }
                 })
             .attr('offset', (d, i) => yScale(i) + "%");
-
-
     };
+
+    
 
 
 });
