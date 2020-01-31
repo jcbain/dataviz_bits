@@ -6,7 +6,7 @@ Array.prototype.unique = function() {
 
 // PLOTTING VARIABLES
 let chartWidth = 800,
-    chartHeight = 200
+    chartHeight = 300
     chromeRounding = 20;
 
 let margin = {top: 10, right: 20, bottom: 20, left: 20};
@@ -49,10 +49,22 @@ Promise.all([
 
     state = {mu: "1e-6", r: "1e-6", sigsqr: "5", m: "1e-3", output_gen: 50000, pop: 0}
 
+    d3.select('#opt' + state.m)
+        .classed('active', true);
+
     let mButtons = d3.selectAll('.migration-opts');
+
     
     mButtons.on('click', function() {
-            let opt = d3.select(this).property('value');
+            // remove active key
+            d3.selectAll('.migration-opts').classed('active', false);
+
+            // get button selected and give the active class
+            let selection = d3.select(this);
+            let opt = selection.property('value');
+            selection.classed('active', true);
+
+            // update
             updateFilter(opt);
     })
 
