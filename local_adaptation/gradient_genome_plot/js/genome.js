@@ -47,12 +47,26 @@ Promise.all([
         .attr('value', d => d)
         .text(d => d);
 
+    d3.select('#genome-chart')
+        .append('div')
+        .attr('id', 'sigsqr-selector')
+        .attr('class', 'param-opts')
+        .selectAll('.siqsqr-opts')
+        .data(sigsqrOpts)
+        .enter()
+        .append('button')
+        .attr('id', d => 'opt' + d)
+        .attr('class', 'sigsqr-opts')
+        .attr('value', d => d)
+        .text(d => d);
+
     state = {mu: "1e-6", r: "1e-6", sigsqr: "5", m: "1e-3", output_gen: 50000, pop: 0}
 
-    d3.select('#opt' + state.m)
-        .classed('active', true);
+    d3.select('#opt' + state.m).classed('active', true);
+    d3.select('#opt' + state.sigsqr).classed('active', true)
 
     let mButtons = d3.selectAll('.migration-opts');
+    let rButtons = d3.selectAll('.sigsqr-opts');
 
     let dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
 
@@ -139,14 +153,32 @@ Promise.all([
         let selection = d3.select(this);
         let opt = selection.property('value');
         selection.classed('active', true);
+        console.log(selection);
 
         // update
-        updateFilter(opt);
+        updateFilter(m=opt, sigsqr=state.sigsqr);
+        })
+
+    // migration rate buttons
+    rButtons.on('click', function() {
+        // remove active key
+        d3.selectAll('.sigsqr-opts').classed('active', false);
+
+        // get button selected and give the active class
+        let selection = d3.select(this);
+        let opt = selection.property('value');
+        selection.classed('active', true);
+    
+
+        // update
+        updateFilter(m=state.m, sigsqr=opt);
         })
 
     // FUNCTIONS   
-    function updateFilter(m){
+    function updateFilter(m, sigsqr){
         state.m = m;
+        state.sigsqr = sigsqr;
+        console.log(state)
         dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
 
         const dataNewGenome = [];
@@ -158,7 +190,7 @@ Promise.all([
             dataNewGenome.push(p);
         });
 
-        console.log(dataNewGenome);
+        // console.log(dataNewGenome);
 
         stops
             .data(dataNewGenome)
