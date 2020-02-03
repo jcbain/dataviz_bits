@@ -34,31 +34,9 @@ Promise.all([
     let outputGenOpts = makeUniqueArray('output_gen');
     let popOpts = makeUniqueArray('pop');
 
-    d3.select('#genome-chart')
-        .append('div')
-        .attr('id', 'migration-selector')
-        .attr('class', 'param-opts')
-        .selectAll('.migration-opts')
-        .data(mOpts)
-        .enter()
-        .append('button')
-        .attr('id', d => 'opt' + d)
-        .attr('class', 'migration-opts')
-        .attr('value', d => d)
-        .text(d => d);
-
-    d3.select('#genome-chart')
-        .append('div')
-        .attr('id', 'sigsqr-selector')
-        .attr('class', 'param-opts')
-        .selectAll('.siqsqr-opts')
-        .data(sigsqrOpts)
-        .enter()
-        .append('button')
-        .attr('id', d => 'opt' + d)
-        .attr('class', 'sigsqr-opts')
-        .attr('value', d => d)
-        .text(d => d);
+    // create parameter buttons
+    makeButtons('migration', mOpts, 'm')
+    makeButtons('sigsqr', sigsqrOpts, 'sigsqr')
 
     state = {mu: "1e-6", r: "1e-6", sigsqr: "5", m: "1e-3", output_gen: 50000, pop: 0}
 
@@ -66,7 +44,7 @@ Promise.all([
     d3.select('#opt' + state.sigsqr).classed('active', true)
 
     let mButtons = d3.selectAll('.migration-opts');
-    let rButtons = d3.selectAll('.sigsqr-opts');
+    let sigButtons = d3.selectAll('.sigsqr-opts');
 
     let dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
 
@@ -143,41 +121,32 @@ Promise.all([
         .attr('width', 40)
         .attr('stroke', '#c2c2ab')
         .style('fill', "url(#grads)");
+
     
-    // migration rate buttons
-    mButtons.on('click', function() {
-        // remove active key
-        d3.selectAll('.migration-opts').classed('active', false);
-
-        // get button selected and give the active class
-        let selection = d3.select(this);
-        let opt = selection.property('value');
-        selection.classed('active', true);
-        console.log(selection);
-
-        // update
-        updateFilter(m=opt, sigsqr=state.sigsqr);
-        })
-
-    // migration rate buttons
-    rButtons.on('click', function() {
-        // remove active key
-        d3.selectAll('.sigsqr-opts').classed('active', false);
-
-        // get button selected and give the active class
-        let selection = d3.select(this);
-        let opt = selection.property('value');
-        selection.classed('active', true);
-    
-
-        // update
-        updateFilter(m=state.m, sigsqr=opt);
-        })
+    mButtons.on('click', makeSelection);
+    sigButtons.on('click', makeSelection);
 
     // FUNCTIONS   
-    function updateFilter(m, sigsqr){
-        state.m = m;
-        state.sigsqr = sigsqr;
+
+    function makeSelection(){
+        // remove any active classes
+        d3.selectAll(this.parentNode.childNodes).classed('active', false);
+
+        // select the button
+        let selection = d3.select(this);
+        let opt = selection.property('value');
+        let name = selection.attr('belongs-to');
+
+        // updates
+        selection.classed('active', true);
+        state[name] = opt;
+        
+        updateFilter()
+    };
+
+
+    function updateFilter(){
+
         console.log(state)
         dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
 
@@ -214,6 +183,22 @@ Promise.all([
                 })
             .attr('offset', (d, i) => yScale(i) + "%");
     };
+
+    function makeButtons(name, options, ref){
+        d3.select('#genome-chart')
+        .append('div')
+        .attr('id', name + '-selector')
+        .attr('class', 'param-opts')
+        .selectAll('.' + name + '-opts')
+        .data(options)
+        .enter()
+        .append('button')
+        .attr('id', d => 'opt' + d)
+        .attr('class', name + '-opts')
+        .attr('belongs-to', ref)
+        .attr('value', d => d)
+        .text(d => d);
+    }
 
     
 
