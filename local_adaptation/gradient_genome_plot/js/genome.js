@@ -22,6 +22,7 @@ Promise.all([
         d['positional_phen'] = d.freq * d.select_coef;
     })
 
+    // TODO: this function needs to be commented
     function makeUniqueArray(param){
         return data.map(d => d[param]).unique();
     }
@@ -35,16 +36,19 @@ Promise.all([
     let popOpts = makeUniqueArray('pop');
 
     // create parameter buttons
-    makeButtons('migration', mOpts, 'm')
-    makeButtons('sigsqr', sigsqrOpts, 'sigsqr')
+    makeButtons('migration', mOpts, 'm');
+    makeButtons('sigsqr', sigsqrOpts, 'sigsqr');
+    makeButtons('pop', popOpts, 'pop');
 
-    state = {mu: "1e-6", r: "1e-6", sigsqr: "5", m: "1e-3", output_gen: 50000, pop: 0}
+    state = {mu: "1e-6", r: "1e-6", sigsqr: "5", m: "1e-3", output_gen: 50000, pop: 1}
 
     d3.select('#opt' + state.m).classed('active', true);
     d3.select('#opt' + state.sigsqr).classed('active', true)
+    d3.select('#opt' + state.pop).classed('active', true)
 
     let mButtons = d3.selectAll('.migration-opts');
     let sigButtons = d3.selectAll('.sigsqr-opts');
+    let popButtons = d3.selectAll('.pop-opts');
 
     let dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
 
@@ -122,12 +126,14 @@ Promise.all([
         .attr('stroke', '#c2c2ab')
         .style('fill', "url(#grads)");
 
-    
+    // make buttons clickable
     mButtons.on('click', makeSelection);
     sigButtons.on('click', makeSelection);
+    popButtons.on('click', makeSelection);
 
     // FUNCTIONS   
-
+    
+    // TODO: this function needs to be documented
     function makeSelection(){
         // remove any active classes
         d3.selectAll(this.parentNode.childNodes).classed('active', false);
@@ -144,10 +150,10 @@ Promise.all([
         updateFilter()
     };
 
-
+    // TODO: this fuction needs to be documented
     function updateFilter(){
 
-        console.log(state)
+        console.log(state) // can comment or erase, but just shows the current parameter selections
         dataFiltered = data.filter(d => filterOnParams(d, state.mu, state.r, state.sigsqr, state.m, state.output_gen, state.pop));
 
         const dataNewGenome = [];
@@ -184,6 +190,7 @@ Promise.all([
             .attr('offset', (d, i) => yScale(i) + "%");
     };
 
+    // TODO: this function needs to be commented    
     function makeButtons(name, options, ref){
         d3.select('#genome-chart')
         .append('div')
@@ -200,12 +207,9 @@ Promise.all([
         .text(d => d);
     }
 
-    
-
-
 });
 
 // create a function to filter data
 function filterOnParams(row, mu, r, sigsqr, m, output_gen, pop) {
-    return row.mu === mu && row.m === m && row.r === r && row.sigsqr === sigsqr && row.output_gen === output_gen && row.pop === pop;
+    return row.mu === mu && row.m === m && row.r === r && row.sigsqr === sigsqr && row.output_gen === output_gen && row.pop == pop;
 };
