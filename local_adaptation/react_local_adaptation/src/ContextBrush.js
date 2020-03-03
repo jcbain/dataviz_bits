@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import './style.css';
 import { scaleLinear } from 'd3-scale';
 import { min, max } from 'd3-array';
 import { brushX } from 'd3-brush';
@@ -9,6 +10,9 @@ class ContextBrush extends Component {
     constructor(props) {
         super(props);
         this.createBrush = this.createBrush.bind(this);
+        console.log(this.props)
+
+
     }
 
     componentDidMount() {
@@ -18,14 +22,13 @@ class ContextBrush extends Component {
     componentDidUpdate() {
         this.createBrush();
     }
+
+
     
     createBrush() {
         const node = this.node;
 
-        let xScale = scaleLinear()
-        .domain([min(this.props.data, d => d.output_gen),
-                 max(this.props.data, d => d.output_gen)])
-        .range([margin.left, chartDims.width - margin.right]);
+        let xScale = this.props.xScale;
 
         const brushScale = scaleLinear()
             .domain([
@@ -52,7 +55,7 @@ class ContextBrush extends Component {
             .call(g => g.select('.overlay')
             .datum({type: 'selection'})
             .on("mousedown touchstart", centerAroundTouch));
-
+       
         function brushed() {
             let selection = event.selection;
             if (selection === null) {

@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
+
+body {
+    font-family: 'Roboto Slab', serif;
+}
+
+.text-container {
+    width: 80vw;
+}
+
+.context-line-chart {
+    width: 90vw;
+}
+
+.selection {
+    fill: none;
+    stroke: black;
+    stroke-width: .25vw;
+}

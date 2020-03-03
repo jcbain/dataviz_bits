@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import './App.css'
 import { range, sum } from 'd3-array'
+import { scaleLinear } from 'd3-scale';
+import { min, max } from 'd3-array';
+
 
 import { nest } from 'd3-collection';
 import data from './data/mutations_bg.json';
@@ -30,15 +33,28 @@ console.log(dataPopPhen);
 
 
 class App extends Component {
+
   render() {
-   return (
-     <div className="App">
-       <div>
-         <LineChart data={dataPopPhen} />
-       </div>
-     </div>
-   )
-   }
+    const xScale = scaleLinear()
+      .domain([min(dataPopPhen, d => d.output_gen),
+        max(dataPopPhen, d => d.output_gen)])
+      .range([margin.left, chartDims.width - margin.right]);
+
+    return (
+      <div className="App">
+        <div className="text-container">
+          <h1>Local Adaptation</h1>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. Sit amet aliquam id diam maecenas ultricies mi eget. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Nibh venenatis cras sed felis. Viverra adipiscing at in tellus integer feugiat scelerisque. Velit ut tortor pretium viverra suspendisse potenti. Lorem ipsum dolor sit amet consectetur adipiscing elit ut aliquam. Vitae elementum curabitur vitae nunc. Elementum facilisis leo vel fringilla est ullamcorper. Ullamcorper eget nulla facilisi etiam dignissim diam quis.</p>
+        </div>
+        <div className="context-line-chart"> 
+          <LineChart data={dataPopPhen} xScale={xScale}/>
+        </div>
+      </div>
+    )
+  }
 }
+
+const margin = {top: 10, right: 20, bottom: 20, left: 20};
+const chartDims = {width: 800, height: 100};
 
 export default App

@@ -9,10 +9,7 @@ import ContextBrush from './ContextBrush'
 class LineChart extends Component {
     render() {   
         
-        let xScale = scaleLinear()
-            .domain([min(this.props.data, d => d.output_gen),
-                     max(this.props.data, d => d.output_gen)])
-            .range([margin.left, chartDims.width - margin.right]);
+        let xScale = this.props.xScale;
 
         let yScale = scaleLinear()
             .domain([
@@ -40,6 +37,10 @@ class LineChart extends Component {
         let outsideColor = scaleOrdinal()
             .domain(popKeys)
             .range(['#dbafba', '#b4cbdb', '#89b388'])
+
+        function nonColor(k) {
+            return "#dcddde";
+        }
         
 
         const lineGradients = popKeys
@@ -61,6 +62,18 @@ class LineChart extends Component {
             .x(d => xScale(d.output_gen))
             .y(d => yScale(d.pop_phen));
 
+        const contextBackgroundLines = nest()
+            .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr])
+            .entries(this.props.data)
+            .map((d, i) => <path 
+            key={`nonline_${i}`}
+            fill='none'
+            strokeWidth={2}
+            stroke={nonColor(d.key)}
+            d={drawLine(d.values)}>
+
+            </path>)
+
         const contextLines = dataGrouped
             .map((d, i) => <path
                 key={`line_${i}`}
@@ -69,6 +82,7 @@ class LineChart extends Component {
                 stroke={`url(#gradient_pop_${d.key})`}
                 className='context-line'
                 d={drawLine(d.values)}>
+
                     
 
         </path>
@@ -78,8 +92,9 @@ class LineChart extends Component {
 
         return <svg viewBox={[0, 0, chartDims.width, chartDims.height]}>
                     {lineGradients}
+                    {contextBackgroundLines}
                     {contextLines}
-                    <ContextBrush data={this.props.data}/>
+                    <ContextBrush data={this.props.data} xScale={this.props.xScale}/>
                 </svg>
     }
 }
