@@ -3,7 +3,7 @@ import './App.css';
 import { scaleLinear } from 'd3-scale';
 import { min, max } from 'd3-array';
 import { brushX } from 'd3-brush';
-import { select, selectAll, event } from 'd3-selection';
+import { select, selectAll, event, mouse } from 'd3-selection';
 
 class ContextBrush extends Component {
     constructor(props) {
@@ -43,11 +43,15 @@ class ContextBrush extends Component {
             .data([0])
             .enter()
             .append('g')
-            .attr('class', 'brush')
+            .attr('class', 'brush');
 
         select(node)
             .select('g.brush')
-            .call(contextBrush);
+            .call(contextBrush)
+            .call(contextBrush.move, [1000, 5000].map(xScale))
+            .call(g => g.select('.overlay')
+            .datum({type: 'selection'})
+            .on("mousedown touchstart", centerAroundTouch));
 
         function brushed() {
             let selection = event.selection;
@@ -56,13 +60,23 @@ class ContextBrush extends Component {
                 selectAll('.right').attr('offset', '0%')
             } else {
                 let [x0, x1] = selection.map(xScale.invert);
-                selectAll('.start-dull').attr('offset', brushScale(x0) + '%')
-                selectAll('.start-color').attr('offset', brushScale(x0) + '%')
-                selectAll('.end-color').attr('offset', brushScale(x1) + '%')
-                selectAll('.end-dull').attr('offset', brushScale(x1) + '%')
-                console.log(x0)
+                selectAll('.start-dull').attr('offset', brushScale(x0) + '%');
+                selectAll('.start-color').attr('offset', brushScale(x0) + '%');
+                selectAll('.end-color').attr('offset', brushScale(x1) + '%');
+                selectAll('.end-dull').attr('offset', brushScale(x1) + '%');
             }
-        };
+        }
+
+        function centerAroundTouch() {
+            let dx = xScale(3000);
+            let [cx] = mouse(this);
+            let [x0, x1] = [cx - dx / 2, cx + dx / 2];
+            let [X0, X1] = xScale.range();
+            select(this.parentNode)
+                .call(contextBrush.move, x1 > X1 ? [X1 - dx, X1] 
+                    : x0 < X0 ? [X0, X0 + dx] 
+                    : [x0, x1]);
+        }
 
         
     }
