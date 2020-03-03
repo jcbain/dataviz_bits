@@ -221,6 +221,8 @@ d3.json("data/mutations_bg.json").then( data => {
                 (d.values)
         });
 
+    console.log(dataGrouped);
+
     let mainNonFocusLines = focusSVG.selectAll('.main-non-focus-line')
         .data(d3.nest()
             .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr])

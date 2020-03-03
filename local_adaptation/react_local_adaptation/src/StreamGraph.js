@@ -32,6 +32,7 @@ class StreamGraph extends Component {
             .y1(d => yScale(d[1]))
             .curve(curveBasis);
 
+
         const stacks = stackLayout(stackData)
             .map((d, i) => <path 
                             key={"stack" + i}
