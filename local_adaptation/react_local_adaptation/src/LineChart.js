@@ -4,6 +4,7 @@ import { scaleLinear, scaleOrdinal } from 'd3-scale';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
 import { line } from 'd3-shape';
+import ContextBrush from './ContextBrush'
 
 class LineChart extends Component {
     render() {   
@@ -50,10 +51,10 @@ class LineChart extends Component {
                 y1={0}
                 x2={chartDims.width - margin.right}
                 y2={0}>
-                    <stop stopColor={outsideColor(d)} className='left' offset="25%"></stop>
-                    <stop stopColor={focusColor(d)} className='left' offset="25%"></stop>
-                    <stop stopColor={focusColor(d)} className='right' offset="45%"></stop>
-                    <stop stopColor={outsideColor(d)} className='right' offset="45%"></stop>
+                    <stop stopColor={outsideColor(d)} className='left start-dull' offset="25%"></stop>
+                    <stop stopColor={focusColor(d)} className='left start-color' offset="25%"></stop>
+                    <stop stopColor={focusColor(d)} className='right end-color' offset="45%"></stop>
+                    <stop stopColor={outsideColor(d)} className='right end-dull' offset="45%"></stop>
             </linearGradient>);
 
         const drawLine = line()
@@ -78,6 +79,7 @@ class LineChart extends Component {
         return <svg viewBox={[0, 0, chartDims.width, chartDims.height]}>
                     {lineGradients}
                     {contextLines}
+                    <ContextBrush data={this.props.data}/>
                 </svg>
     }
 }
