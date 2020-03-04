@@ -38,7 +38,10 @@ class ContextBrush extends Component {
             .range([0, 100]);
 
         const contextBrush = brushX()
-            .extent([[margin.left, margin.top], [chartDims.width - margin.right, chartDims.height - margin.bottom]])
+            .extent([
+                [this.props.margin.left, this.props.margin.top], 
+                [this.props.chartDims.width - this.props.margin.right, this.props.chartDims.height - this.props.margin.bottom]
+            ])
             .on("brush", brushed);
 
         select(node)
@@ -86,14 +89,10 @@ class ContextBrush extends Component {
 
     render() {
         return <svg ref={node => this.node = node}
-                width={chartDims.width} height={chartDims.height}>
+                width={this.props.chartDims.width} height={this.props.chartDims.height}>
         </svg>
     }
 }
-
-
-const margin = {top: 10, right: 20, bottom: 20, left: 20};
-const chartDims = {width: 800, height: 100};
 
 
 export default ContextBrush;

@@ -16,11 +16,11 @@ class LineChart extends Component {
                 min(this.props.data, d => d.pop_phen),
                 max(this.props.data, d => d.pop_phen)
             ])
-            .range([chartDims.height - margin.bottom, margin.top]);
+            .range([this.props.chartDims.height - this.props.margin.bottom, this.props.margin.top]);
         
 
         let dataFiltered = this.props.data.filter(function(d){
-            return d.mu == "1e-6" && d.m == "1e-4" && d.r == "2";
+            return d.mu === "1e-6" && d.m === "1e-4" && d.r === "2";
         })
 
 
@@ -48,9 +48,9 @@ class LineChart extends Component {
                 key={`pop_${i}`}
                 gradientUnits='userSpaceOnUse'
                 id={`gradient_pop_${d}`}
-                x1={margin.left}
+                x1={this.props.margin.left}
                 y1={0}
-                x2={chartDims.width - margin.right}
+                x2={this.props.chartDims.width - this.props.margin.right}
                 y2={0}>
                     <stop stopColor={outsideColor(d)} className='left start-dull' offset="25%"></stop>
                     <stop stopColor={focusColor(d)} className='left start-color' offset="25%"></stop>
@@ -90,16 +90,16 @@ class LineChart extends Component {
 
         )
 
-        return <svg viewBox={[0, 0, chartDims.width, chartDims.height]}>
+        return <svg viewBox={[0, 0, this.props.chartDims.width, this.props.chartDims.height]}>
                     {lineGradients}
                     {contextBackgroundLines}
                     {contextLines}
-                    <ContextBrush data={this.props.data} xScale={this.props.xScale}/>
+                    <ContextBrush data={this.props.data} 
+                                  xScale={this.props.xScale} 
+                                  margin={this.props.margin}
+                                  chartDims={this.props.chartDims} />
                 </svg>
     }
 }
-
-const margin = {top: 10, right: 20, bottom: 20, left: 20};
-const chartDims = {width: 800, height: 100};
 
 export default LineChart;
