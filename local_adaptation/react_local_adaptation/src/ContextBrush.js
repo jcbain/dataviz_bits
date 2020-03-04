@@ -29,6 +29,7 @@ class ContextBrush extends Component {
         const node = this.node;
 
         let xScale = this.props.xScale;
+        let classStopName = this.props.classStopName;
 
         const brushScale = scaleLinear()
             .domain([
@@ -66,10 +67,10 @@ class ContextBrush extends Component {
                 selectAll('.right').attr('offset', '0%')
             } else {
                 let [x0, x1] = selection.map(xScale.invert);
-                selectAll('.start-dull').attr('offset', brushScale(x0) + '%');
-                selectAll('.start-color').attr('offset', brushScale(x0) + '%');
-                selectAll('.end-color').attr('offset', brushScale(x1) + '%');
-                selectAll('.end-dull').attr('offset', brushScale(x1) + '%');
+                selectAll(`.${classStopName.start01}`).attr('offset', brushScale(x0) + '%');
+                selectAll(`.${classStopName.start02}`).attr('offset', brushScale(x0) + '%');
+                selectAll(`.${classStopName.end01}`).attr('offset', brushScale(x1) + '%');
+                selectAll(`.${classStopName.end02}`).attr('offset', brushScale(x1) + '%');
             }
         }
 

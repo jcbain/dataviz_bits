@@ -55,7 +55,8 @@ class App extends Component {
           <LineChart data={dataPopPhen} 
                      xScale={xScale} 
                      margin={margin} 
-                     chartDims={chartDims}/>
+                     chartDims={chartDims}
+                     classStopName={{start01: 'start-dull', start02: 'start-color', end01: 'end-color', end02: 'end-dull'}}/>
         </div>
       </div>
     )

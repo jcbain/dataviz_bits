@@ -52,10 +52,10 @@ class LineChart extends Component {
                 y1={0}
                 x2={this.props.chartDims.width - this.props.margin.right}
                 y2={0}>
-                    <stop stopColor={outsideColor(d)} className='left start-dull' offset="25%"></stop>
-                    <stop stopColor={focusColor(d)} className='left start-color' offset="25%"></stop>
-                    <stop stopColor={focusColor(d)} className='right end-color' offset="45%"></stop>
-                    <stop stopColor={outsideColor(d)} className='right end-dull' offset="45%"></stop>
+                    <stop stopColor={outsideColor(d)} className={`left ${this.props.classStopName.start01}`}></stop>
+                    <stop stopColor={focusColor(d)} className={`left ${this.props.classStopName.start02}`}></stop>
+                    <stop stopColor={focusColor(d)} className={`right ${this.props.classStopName.end01}`}></stop>
+                    <stop stopColor={outsideColor(d)} className={`right ${this.props.classStopName.end02}`}></stop>
             </linearGradient>);
 
         const drawLine = line()
@@ -97,7 +97,8 @@ class LineChart extends Component {
                     <ContextBrush data={this.props.data} 
                                   xScale={this.props.xScale} 
                                   margin={this.props.margin}
-                                  chartDims={this.props.chartDims} />
+                                  chartDims={this.props.chartDims} 
+                                  classStopName={this.props.classStopName} />
                 </svg>
     }
 }
