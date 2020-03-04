@@ -56,7 +56,8 @@ class App extends Component {
                      xScale={xScale} 
                      margin={margin} 
                      chartDims={chartDims}
-                     classStopName={{start01: 'start-dull', start02: 'start-color', end01: 'end-color', end02: 'end-dull'}}/>
+                     classStopName={{start01: 'start-dull', start02: 'start-color', end01: 'end-color', end02: 'end-dull'}}
+                     renderBrush={true} />
         </div>
       </div>
     )

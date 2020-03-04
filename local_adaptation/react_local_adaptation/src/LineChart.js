@@ -52,10 +52,10 @@ class LineChart extends Component {
                 y1={0}
                 x2={this.props.chartDims.width - this.props.margin.right}
                 y2={0}>
-                    <stop stopColor={outsideColor(d)} className={`left ${this.props.classStopName.start01}`}></stop>
-                    <stop stopColor={focusColor(d)} className={`left ${this.props.classStopName.start02}`}></stop>
-                    <stop stopColor={focusColor(d)} className={`right ${this.props.classStopName.end01}`}></stop>
-                    <stop stopColor={outsideColor(d)} className={`right ${this.props.classStopName.end02}`}></stop>
+                    <stop stopColor={outsideColor(d)} className={`left ${this.props.classStopName.start01}`} offset='0%'></stop>
+                    <stop stopColor={focusColor(d)} className={`left ${this.props.classStopName.start02}`} offset='0%'></stop>
+                    <stop stopColor={focusColor(d)} className={`right ${this.props.classStopName.end01}`} offset='100%'></stop>
+                    <stop stopColor={outsideColor(d)} className={`right ${this.props.classStopName.end02}`} offset='100%'></stop>
             </linearGradient>);
 
         const drawLine = line()
@@ -71,8 +71,7 @@ class LineChart extends Component {
             strokeWidth={2}
             stroke={nonColor(d.key)}
             d={drawLine(d.values)}>
-
-            </path>)
+            </path>);
 
         const contextLines = dataGrouped
             .map((d, i) => <path
@@ -82,23 +81,27 @@ class LineChart extends Component {
                 stroke={`url(#gradient_pop_${d.key})`}
                 className='context-line'
                 d={drawLine(d.values)}>
-
-                    
-
-        </path>
+            </path>);
 
 
-        )
+        let brush;
+        if (this.props.renderBrush){
+            brush = <ContextBrush data={this.props.data} 
+            xScale={this.props.xScale} 
+            margin={this.props.margin}
+            chartDims={this.props.chartDims} 
+            classStopName={this.props.classStopName} />;
+        }
+
+
+
 
         return <svg viewBox={[0, 0, this.props.chartDims.width, this.props.chartDims.height]}>
                     {lineGradients}
                     {contextBackgroundLines}
                     {contextLines}
-                    <ContextBrush data={this.props.data} 
-                                  xScale={this.props.xScale} 
-                                  margin={this.props.margin}
-                                  chartDims={this.props.chartDims} 
-                                  classStopName={this.props.classStopName} />
+                    {brush}
+
                 </svg>
     }
 }
