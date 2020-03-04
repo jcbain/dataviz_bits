@@ -47,7 +47,7 @@ class LineChart extends Component {
             .map((d, i) => <linearGradient
                 key={`pop_${i}`}
                 gradientUnits='userSpaceOnUse'
-                id={`gradient_pop_${d}`}
+                id={`gradient_pop_${d}_${this.props.chartId}`}
                 x1={this.props.margin.left}
                 y1={0}
                 x2={this.props.chartDims.width - this.props.margin.right}
@@ -78,7 +78,7 @@ class LineChart extends Component {
                 key={`line_${i}`}
                 fill='none'
                 strokeWidth={2.5}
-                stroke={`url(#gradient_pop_${d.key})`}
+                stroke={`url(#gradient_pop_${d.key}_${this.props.chartId})`}
                 className='context-line'
                 d={drawLine(d.values)}>
             </path>);

@@ -52,7 +52,17 @@ class App extends Component {
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. Sit amet aliquam id diam maecenas ultricies mi eget. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Nibh venenatis cras sed felis. Viverra adipiscing at in tellus integer feugiat scelerisque. Velit ut tortor pretium viverra suspendisse potenti. Lorem ipsum dolor sit amet consectetur adipiscing elit ut aliquam. Vitae elementum curabitur vitae nunc. Elementum facilisis leo vel fringilla est ullamcorper. Ullamcorper eget nulla facilisi etiam dignissim diam quis.</p>
         </div>
         <div className="context-line-chart"> 
-          <LineChart data={dataPopPhen} 
+          <LineChart chartId = 'focus'
+                     data={dataPopPhen} 
+                     xScale={xScale} 
+                     margin={margin} 
+                     chartDims={{width: 800, height: 300}}
+                     classStopName={{start01: null, start02: null, end01: null, end02: null}}
+                     renderBrush={false} />
+        </div>
+        <div className="context-line-chart"> 
+          <LineChart chartId = 'context'
+                     data={dataPopPhen} 
                      xScale={xScale} 
                      margin={margin} 
                      chartDims={chartDims}
