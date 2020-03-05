@@ -7,6 +7,14 @@ import { line } from 'd3-shape';
 import ContextBrush from './ContextBrush'
 
 class LineChart extends Component {
+    constructor(props){
+        super(props);
+
+        this.state = {
+
+        }
+    }
+
     render() {   
         
         let xScale = this.props.xScale;
