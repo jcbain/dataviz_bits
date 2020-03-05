@@ -6,66 +6,32 @@ import { min, max } from 'd3-array';
 import { brushX } from 'd3-brush';
 import { select, selectAll, event, mouse } from 'd3-selection';
 
-class ContextBrush extends Component {
-    constructor(props) {
-        super(props);
-        this.createBrush = this.createBrush.bind(this);
-        console.log(this.props)
-        
+class SimpleBrush extends Component {
 
-        this.state = {
-            x0: 1000,
-            x1: 5000
-        }
-        console.log(this.state)
-
-    }
-
-    componentDidMount() {
-        this.createBrush();
-    }
-
-    componentDidUpdate() {
-        this.createBrush();
-    }
-
-
-    
     createBrush() {
-        const node = this.node;
-
         let xScale = this.props.xScale;
         let classStopName = this.props.classStopName;
-
         const brushScale = scaleLinear()
-            .domain([
-                min(this.props.data, d => d.output_gen),
-                max(this.props.data, d => d.output_gen)
-            ])
-            .range([0, 100]);
+        .domain([
+            min(this.props.data, d => d.output_gen),
+            max(this.props.data, d => d.output_gen)
+        ])
+        .range([0, 100]);
 
         const contextBrush = brushX()
-            .extent([
-                [this.props.margin.left, this.props.margin.top], 
-                [this.props.chartDims.width - this.props.margin.right, this.props.chartDims.height - this.props.margin.bottom]
-            ])
-            .on("brush", brushed);
+        .extent([
+            [this.props.margin.left, this.props.margin.top], 
+            [this.props.chartDims.width - this.props.margin.right, this.props.chartDims.height - this.props.margin.bottom]
+        ])
+        .on("brush", brushed);
 
-        select(node)
-            .selectAll('g.brush')
-            .data([0])
-            .enter()
-            .append('g')
-            .attr('class', 'brush');
+        select('g.brush')
+        .call(contextBrush)
+        .call(contextBrush.move, [1000, 5000].map(xScale))
+        .call(g => g.select('.overlay')
+        .datum({type: 'selection'})
+        .on("mousedown touchstart", centerAroundTouch));
 
-        select(node)
-            .select('g.brush')
-            .call(contextBrush)
-            .call(contextBrush.move, [1000, 5000].map(xScale))
-            .call(g => g.select('.overlay')
-            .datum({type: 'selection'})
-            .on("mousedown touchstart", centerAroundTouch));
-       
         function brushed() {
             let selection = event.selection;
             if (selection === null) {
@@ -90,16 +56,16 @@ class ContextBrush extends Component {
                     : x0 < X0 ? [X0, X0 + dx] 
                     : [x0, x1]);
         }
-
-        
     }
 
-    render() {
-        return <svg ref={node => this.node = node}
-                width={this.props.chartDims.width} height={this.props.chartDims.height}>
+
+    render(){
+        return <svg width={this.props.chartDims.width} height={this.props.chartDims.height}><g className="brush">
+            {this.createBrush}
+        </g>
         </svg>
     }
+
 }
 
-
-export default ContextBrush;
+export default SimpleBrush;

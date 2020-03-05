@@ -15,6 +15,10 @@ class LineChart extends Component {
         }
     }
 
+    componentDidMount() {
+        console.log('hello');
+    }
+
     render() {   
         
         let xScale = this.props.xScale;
