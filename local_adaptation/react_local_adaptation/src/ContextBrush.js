@@ -19,6 +19,7 @@ class ContextBrush extends Component {
     }
 
     componentDidUpdate() {
+        // this.createBrush();
     }
 
    
@@ -55,7 +56,7 @@ class ContextBrush extends Component {
         select(node)
             .select('g.brush')
             .call(contextBrush)
-            .call(contextBrush.move, [1000, 5000].map(xScale))
+            .call(contextBrush.move, [this.props.startExtent.x0, this.props.startExtent.x1].map(xScale))
             .call(g => g.select('.overlay')
             .datum({type: 'selection'})
             .on("mousedown touchstart", centerAroundTouch));

@@ -32,6 +32,18 @@ nest()
 
 
 class App extends Component {
+  constructor(props){
+    super(props);
+    this.focusStartExent = {x0: 1000, x1: 5000};
+    this.onBrush = this.onBrush.bind(this);
+
+    this.state = { focusBrushExtent: [this.focusStartExent.x0, this.focusStartExent.x1]}
+  }
+
+  onBrush(d) {
+    this.setState({ focusBrushExtent: d})
+    console.log(this.state)
+  }
 
   render() {
     const margin = {top: 10, right: 20, bottom: 20, left: 20};
@@ -54,6 +66,7 @@ class App extends Component {
           <LineChart chartId = 'focus'
                      data={dataPopPhen} 
                      xScale={xScale} 
+                     changeBrush={this.onBrush}
                      margin={margin} 
                      chartDims={{width: 800, height: 300}}
                      classStopName={{start01: null, start02: null, end01: null, end02: null}}
@@ -63,6 +76,7 @@ class App extends Component {
           <LineChart chartId = 'context'
                      data={dataPopPhen} 
                      xScale={xScale} 
+                     changeBrush={this.onBrush}
                      margin={margin} 
                      chartDims={chartDims}
                      classStopName={{start01: 'start-dull', start02: 'start-color', end01: 'end-color', end02: 'end-dull'}}

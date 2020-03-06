@@ -11,14 +11,17 @@ class LineChart extends Component {
     constructor(props){
         super(props);
         this.onBrush = this.onBrush.bind(this);
+        this.startExtent = {x0: 1000, x1: 5000};
         
-        this.state = { brushExtent: [0, 40]}
+        this.state = { brushExtent: [this.startExtent.x0, this.startExtent.x1]}
+    }
+    brushFn = this.props.changeBrush;
+    onBrush(d) {
+        this.setState({ brushExtent: d });
+        this.brushFn(d);
+        console.log(this.state)
     }
 
-    onBrush(d) {
-        this.setState({ brushExtent: d })
-        console.log(this.state)
-      }
       
 
     render() {   
@@ -105,7 +108,8 @@ class LineChart extends Component {
             changeBrush={this.onBrush}
             margin={this.props.margin}
             chartDims={this.props.chartDims} 
-            classStopName={this.props.classStopName} />;
+            classStopName={this.props.classStopName} 
+            startExtent = {this.startExtent} />;
         }
         // if (this.props.renderBrush){
         //     brush = <SimpleBrush chartDims={this.props.ChartDims}/>
