@@ -29,7 +29,6 @@ nest()
     d['pop_phen']   = d.value;
     dataPopPhen.push(d)
   });
-console.log(dataPopPhen);
 
 
 class App extends Component {

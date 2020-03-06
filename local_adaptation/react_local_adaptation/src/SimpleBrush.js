@@ -7,62 +7,63 @@ import { brushX } from 'd3-brush';
 import { select, selectAll, event, mouse } from 'd3-selection';
 
 class SimpleBrush extends Component {
+    constructor(props) {
+        super(props)
 
-    createBrush() {
-        let xScale = this.props.xScale;
-        let classStopName = this.props.classStopName;
-        const brushScale = scaleLinear()
-        .domain([
-            min(this.props.data, d => d.output_gen),
-            max(this.props.data, d => d.output_gen)
-        ])
-        .range([0, 100]);
-
-        const contextBrush = brushX()
-        .extent([
-            [this.props.margin.left, this.props.margin.top], 
-            [this.props.chartDims.width - this.props.margin.right, this.props.chartDims.height - this.props.margin.bottom]
-        ])
-        .on("brush", brushed);
-
-        select('g.brush')
-        .call(contextBrush)
-        .call(contextBrush.move, [1000, 5000].map(xScale))
-        .call(g => g.select('.overlay')
-        .datum({type: 'selection'})
-        .on("mousedown touchstart", centerAroundTouch));
-
-        function brushed() {
-            let selection = event.selection;
-            if (selection === null) {
-                selectAll('.left').attr('offset', '0%');
-                selectAll('.right').attr('offset', '0%')
-            } else {
-                let [x0, x1] = selection.map(xScale.invert);
-                selectAll(`.${classStopName.start01}`).attr('offset', brushScale(x0) + '%');
-                selectAll(`.${classStopName.start02}`).attr('offset', brushScale(x0) + '%');
-                selectAll(`.${classStopName.end01}`).attr('offset', brushScale(x1) + '%');
-                selectAll(`.${classStopName.end02}`).attr('offset', brushScale(x1) + '%');
-            }
-        }
-
-        function centerAroundTouch() {
-            let dx = xScale(3000);
-            let [cx] = mouse(this);
-            let [x0, x1] = [cx - dx / 2, cx + dx / 2];
-            let [X0, X1] = xScale.range();
-            select(this.parentNode)
-                .call(contextBrush.move, x1 > X1 ? [X1 - dx, X1] 
-                    : x0 < X0 ? [X0, X0 + dx] 
-                    : [x0, x1]);
-        }
+        this.state = {};
     }
 
 
+
+    createBrush() {
+        return (
+            <g className="brush"
+                pointerEvents="all">
+                <rect className="overlay"
+                      fill="none"
+                      pointerEvents="all"
+                      cursor="crosshair"
+                      x="20"
+                      y="10"
+                      width="760"
+                      height="70"></rect>
+                <rect className="selection" 
+                      cursor="move"
+                      fill = "#777"
+                      fillOpacity={0.3}
+                      stroke="#fff"
+                      shapeRendering="crispEdges"
+                      x="20"
+                      y="10"
+                      width="62"
+                      height="70">
+                </rect>
+                <rect className="handle handle--w"
+                      cursor="ew-resize"
+                      x="17"
+                      y="7"
+                      width="6"
+                      height="76"
+                >
+                </rect>
+                <rect className="handle handle--e"
+                      cursor="ew-resize"
+                      x="79"
+                      y="7"
+                      width="6"
+                      height="76"
+                >   
+                </rect>
+            </g>
+
+        );
+    }
+
+
+
     render(){
-        return <svg width={this.props.chartDims.width} height={this.props.chartDims.height}><g className="brush">
-            {this.createBrush}
-        </g>
+        return <svg width={800} height={100}>
+            {this.createBrush()}
         </svg>
     }
 

@@ -11,13 +11,6 @@ class ContextBrush extends Component {
         super(props);
         this.createBrush = this.createBrush.bind(this);
         console.log(this.props)
-        
-
-        this.state = {
-            x0: 1000,
-            x1: 5000
-        }
-        console.log(this.state)
 
     }
 
@@ -26,16 +19,16 @@ class ContextBrush extends Component {
     }
 
     componentDidUpdate() {
-        this.createBrush();
     }
 
-
-    
+   
     createBrush() {
         const node = this.node;
 
         let xScale = this.props.xScale;
         let classStopName = this.props.classStopName;
+        let brushFn = this.props.changeBrush;
+
 
         const brushScale = scaleLinear()
             .domain([
@@ -43,6 +36,7 @@ class ContextBrush extends Component {
                 max(this.props.data, d => d.output_gen)
             ])
             .range([0, 100]);
+
 
         const contextBrush = brushX()
             .extent([
@@ -65,7 +59,7 @@ class ContextBrush extends Component {
             .call(g => g.select('.overlay')
             .datum({type: 'selection'})
             .on("mousedown touchstart", centerAroundTouch));
-       
+        
         function brushed() {
             let selection = event.selection;
             if (selection === null) {
@@ -78,7 +72,9 @@ class ContextBrush extends Component {
                 selectAll(`.${classStopName.end01}`).attr('offset', brushScale(x1) + '%');
                 selectAll(`.${classStopName.end02}`).attr('offset', brushScale(x1) + '%');
             }
+            brushFn(selection.map(d => xScale.invert(d)))
         }
+
 
         function centerAroundTouch() {
             let dx = xScale(3000);
@@ -90,13 +86,12 @@ class ContextBrush extends Component {
                     : x0 < X0 ? [X0, X0 + dx] 
                     : [x0, x1]);
         }
-
         
     }
 
     render() {
         return <svg ref={node => this.node = node}
-                width={this.props.chartDims.width} height={this.props.chartDims.height}>
+                width={this.props.chartDims.width} height={this.props.chartDims.height} >
         </svg>
     }
 }

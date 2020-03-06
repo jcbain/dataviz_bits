@@ -4,20 +4,22 @@ import { scaleLinear, scaleOrdinal } from 'd3-scale';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
 import { line } from 'd3-shape';
-import ContextBrush from './ContextBrush'
+import ContextBrush from './ContextBrush';
+// import SimpleBrush from './SimpleBrush'
 
 class LineChart extends Component {
     constructor(props){
         super(props);
-
-        this.state = {
-
-        }
+        this.onBrush = this.onBrush.bind(this);
+        
+        this.state = { brushExtent: [0, 40]}
     }
 
-    componentDidMount() {
-        console.log('hello');
-    }
+    onBrush(d) {
+        this.setState({ brushExtent: d })
+        console.log(this.state)
+      }
+      
 
     render() {   
         
@@ -100,10 +102,14 @@ class LineChart extends Component {
         if (this.props.renderBrush){
             brush = <ContextBrush data={this.props.data} 
             xScale={this.props.xScale} 
+            changeBrush={this.onBrush}
             margin={this.props.margin}
             chartDims={this.props.chartDims} 
             classStopName={this.props.classStopName} />;
         }
+        // if (this.props.renderBrush){
+        //     brush = <SimpleBrush chartDims={this.props.ChartDims}/>
+        // }
 
 
 
