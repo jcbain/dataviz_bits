@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './App.css';
 import { scaleLinear, scaleOrdinal } from 'd3-scale';
 import { min, max } from 'd3-array';
@@ -6,6 +7,7 @@ import { nest } from 'd3-collection';
 import { line } from 'd3-shape';
 import ContextBrush from './ContextBrush';
 import { select, selectAll } from 'd3';
+import { axisBottom } from 'd3-axis';
 
 class LineChart extends Component {
     constructor(props){
@@ -29,13 +31,29 @@ class LineChart extends Component {
         .x(d => this.props.xScale(d.output_gen))
         .y(d => this.yScale(d.pop_phen));
 
-    componentDidUpdate() {}
+    
 
     brushFn = this.props.changeBrush;
     onBrush(d) {
         this.setState({ brushExtent: d });
         this.brushFn(d);
     }
+
+    xAxis = g => g
+        .attr("transform", `translate(0,${this.props.chartDims.height - this.props.margin.bottom})`)
+        .call(axisBottom(this.props.xScale));
+
+    componentDidMount() {
+        if(this.props.renderAxis){
+            let node = select(ReactDOM.findDOMNode(this))
+            node.append('g').call(this.xAxis);
+        }
+
+
+    }
+
+    componentDidUpdate() {}
+
 
       
 
@@ -44,6 +62,8 @@ class LineChart extends Component {
         let dataFiltered = this.props.data.filter(function(d){
             return d.mu === "1e-6" && d.m === "1e-4" && d.r === "2";
         })
+
+
 
 
         let dataGrouped = nest()

@@ -71,7 +71,8 @@ class App extends Component {
                      margin={margin} 
                      chartDims={{width: chartDims.width, height: 300}}
                      classStopName={{start01: 'start-dull-poo', start02: 'start-color-poo', end01: 'end-color-poo', end02: 'end-dull-poo'}}
-                     renderBrush={false} />
+                     renderBrush={false} 
+                     renderAxis={false}/>
 
         </div>
         <div className="context-line-chart"> 
@@ -82,7 +83,8 @@ class App extends Component {
                      margin={margin} 
                      chartDims={chartDims}
                      classStopName={{start01: 'start-dull', start02: 'start-color', end01: 'end-color', end02: 'end-dull'}}
-                     renderBrush={true} />
+                     renderBrush={true} 
+                     renderAxis={true}/>
         </div>
       </div>
     )

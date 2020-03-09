@@ -19,8 +19,7 @@ class ContextBrush extends Component {
     }
 
     componentDidUpdate() {
-        // this.createBrush();
-        console.log("brush update")
+
     }
 
    
