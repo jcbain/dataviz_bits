@@ -10,7 +10,7 @@ class ContextBrush extends Component {
     constructor(props) {
         super(props);
         this.createBrush = this.createBrush.bind(this);
-        console.log(this.props)
+        // console.log(this.props)
 
     }
 
@@ -20,6 +20,7 @@ class ContextBrush extends Component {
 
     componentDidUpdate() {
         // this.createBrush();
+        console.log("brush update")
     }
 
    
@@ -62,6 +63,7 @@ class ContextBrush extends Component {
             .on("mousedown touchstart", centerAroundTouch));
         
         function brushed() {
+            // console.log(event);
             let selection = event.selection;
             if (selection === null) {
                 selectAll('.left').attr('offset', '0%');

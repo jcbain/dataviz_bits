@@ -8,8 +8,12 @@ body {
     width: 80vw;
 }
 
+.focus-line-chart {
+    width: 80vw;
+}
+
 .context-line-chart {
-    width: 90vw;
+    width: 80vw;
 }
 
 .selection {

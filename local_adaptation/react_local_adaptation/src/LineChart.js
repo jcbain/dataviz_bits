@@ -5,7 +5,7 @@ import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
 import { line } from 'd3-shape';
 import ContextBrush from './ContextBrush';
-// import SimpleBrush from './SimpleBrush'
+import { select, selectAll } from 'd3';
 
 class LineChart extends Component {
     constructor(props){
@@ -15,27 +15,32 @@ class LineChart extends Component {
         
         this.state = { brushExtent: [this.startExtent.x0, this.startExtent.x1]}
     }
+    
+    yScale = scaleLinear()
+        .domain([
+            min(this.props.data, d => d.pop_phen),
+            max(this.props.data, d => d.pop_phen)
+        ])
+        .range([this.props.chartDims.height - this.props.margin.bottom, this.props.margin.top]);
+
+
+
+    drawLine = line()
+        .x(d => this.props.xScale(d.output_gen))
+        .y(d => this.yScale(d.pop_phen));
+
+    componentDidUpdate() {}
+
     brushFn = this.props.changeBrush;
     onBrush(d) {
         this.setState({ brushExtent: d });
         this.brushFn(d);
-        console.log(this.state)
     }
 
       
 
     render() {   
-        
-        let xScale = this.props.xScale;
-
-        let yScale = scaleLinear()
-            .domain([
-                min(this.props.data, d => d.pop_phen),
-                max(this.props.data, d => d.pop_phen)
-            ])
-            .range([this.props.chartDims.height - this.props.margin.bottom, this.props.margin.top]);
-        
-
+    
         let dataFiltered = this.props.data.filter(function(d){
             return d.mu === "1e-6" && d.m === "1e-4" && d.r === "2";
         })
@@ -75,29 +80,26 @@ class LineChart extends Component {
                     <stop stopColor={outsideColor(d)} className={`right ${this.props.classStopName.end02}`} offset='100%'></stop>
             </linearGradient>);
 
-        const drawLine = line()
-            .x(d => xScale(d.output_gen))
-            .y(d => yScale(d.pop_phen));
-
-        const contextBackgroundLines = nest()
+        let contextBackgroundLines = nest()
             .key(d => [ d.pop, d.m, d.mu, d.r, d.sigsqr])
             .entries(this.props.data)
             .map((d, i) => <path 
-            key={`nonline_${i}`}
+            key={`nonline_${i}_${this.props.chartId}`}
             fill='none'
             strokeWidth={2}
             stroke={nonColor(d.key)}
-            d={drawLine(d.values)}>
+            className='context-background-lines'
+            d={this.drawLine(d.values)}>
             </path>);
 
-        const contextLines = dataGrouped
+        let contextLines = dataGrouped
             .map((d, i) => <path
-                key={`line_${i}`}
+                key={`line_${i}_${this.props.chartId}`}
                 fill='none'
                 strokeWidth={2.5}
                 stroke={`url(#gradient_pop_${d.key}_${this.props.chartId})`}
                 className='context-line'
-                d={drawLine(d.values)}>
+                d={this.drawLine(d.values)}>
             </path>);
 
 
@@ -111,9 +113,7 @@ class LineChart extends Component {
             classStopName={this.props.classStopName} 
             startExtent = {this.startExtent} />;
         }
-        // if (this.props.renderBrush){
-        //     brush = <SimpleBrush chartDims={this.props.ChartDims}/>
-        // }
+
 
 
 
