@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './App.css';
 import './style.css';
 import { scaleLinear } from 'd3-scale';
@@ -25,6 +26,7 @@ class ContextBrush extends Component {
    
     createBrush() {
         const node = this.node;
+        const interval = closestFromArray(this.props.data.map(d => parseInt(d.output_gen)))
 
         let xScale = this.props.xScale;
         let classStopName = this.props.classStopName;
@@ -74,9 +76,9 @@ class ContextBrush extends Component {
                 selectAll(`.${classStopName.end01}`).attr('offset', brushScale(x1) + '%');
                 selectAll(`.${classStopName.end02}`).attr('offset', brushScale(x1) + '%');
             }
+            
             brushFn(selection.map(d => xScale.invert(d)))
         }
-
 
         function centerAroundTouch() {
             let dx = xScale(3000);
@@ -88,6 +90,12 @@ class ContextBrush extends Component {
                     : x0 < X0 ? [X0, X0 + dx] 
                     : [x0, x1]);
         }
+
+        function closestFromArray (arr){
+            return (target) => arr.reduce(function(prev, curr){
+                return (Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev);
+            })
+        }
         
     }
 
@@ -97,6 +105,8 @@ class ContextBrush extends Component {
         </svg>
     }
 }
+
+
 
 
 export default ContextBrush;
