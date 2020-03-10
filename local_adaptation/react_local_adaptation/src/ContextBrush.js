@@ -103,11 +103,11 @@ class ContextBrush extends Component {
                 selectAll('.right').attr('offset', '0%')
             } else{
                 let [x0, x1] = selection.map(d => interval(xScale.invert(d)));
-                select(this).transition().call(contextBrush.move, x1 > x0 ? [x0, x1].map(xScale) : null);
-                selectAll(`.${classStopName.start01}`).transition().attr('offset', brushScale(x0) + '%');
-                selectAll(`.${classStopName.start02}`).transition().attr('offset', brushScale(x0) + '%');
-                selectAll(`.${classStopName.end01}`).transition().attr('offset', brushScale(x1) + '%');
-                selectAll(`.${classStopName.end02}`).transition().attr('offset', brushScale(x1) + '%');
+                select(this).transition().duration(1).call(contextBrush.move, x1 > x0 ? [x0, x1].map(xScale) : null);
+                selectAll(`.${classStopName.start01}`).transition().duration(1).attr('offset', brushScale(x0) + '%');
+                selectAll(`.${classStopName.start02}`).transition().duration(1).attr('offset', brushScale(x0) + '%');
+                selectAll(`.${classStopName.end01}`).transition().duration(1).attr('offset', brushScale(x1) + '%');
+                selectAll(`.${classStopName.end02}`).transition().duration(1).attr('offset', brushScale(x1) + '%');
                 brushFn(selection.map(d => xScale.invert(d)))
             }
 
