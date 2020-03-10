@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './App.css';
 import './style.css';
 import { scaleLinear } from 'd3-scale';
@@ -11,19 +10,12 @@ class ContextBrush extends Component {
     constructor(props) {
         super(props);
         this.createBrush = this.createBrush.bind(this);
-        // console.log(this.props)
-
     }
 
     componentDidMount() {
         this.createBrush();
     }
 
-    componentDidUpdate() {
-
-    }
-
-   
     createBrush() {
         const node = this.node;
         const interval = closestFromArray(this.props.data.map(d => parseInt(d.output_gen)))
@@ -68,33 +60,6 @@ class ContextBrush extends Component {
         selectAll(`.${classStopName.end01}`).attr('offset', brushScale(this.props.startExtent.x1) + '%');
         selectAll(`.${classStopName.end02}`).attr('offset', brushScale(this.props.startExtent.x1) + '%');
 
-
-        // select(node)
-        //     .select('g.brush')
-        //     .call(contextBrush)
-        //     .on('brush', brushended);
-        
-        // function brushed() {
-        //     // console.log(event);
-        //     let selection = event.selection;
-
-        //     if (selection === null) {
-        //         selectAll('.left').attr('offset', '0%');
-        //         selectAll('.right').attr('offset', '0%')
-        //     } else {
-        //         let [x0, x1] = selection.map(xScale.invert);
-        //         // let x = selection.map(xScale.invert);
-        //         // let [x0, x1] = x.map(interval);
-        //         selectAll(`.${classStopName.start01}`).attr('offset', brushScale(x0) + '%');
-        //         selectAll(`.${classStopName.start02}`).attr('offset', brushScale(x0) + '%');
-        //         selectAll(`.${classStopName.end01}`).attr('offset', brushScale(x1) + '%');
-        //         selectAll(`.${classStopName.end02}`).attr('offset', brushScale(x1) + '%');
-                
-        //     }
-            
-        //     brushFn(selection.map(d => xScale.invert(d)))
-        // }
-
         function brushed() {
             const selection = event.selection;
             if (!event.sourceEvent || !selection) return;
@@ -116,10 +81,7 @@ class ContextBrush extends Component {
         function centerAroundTouch() {
             let dx = xScale(5000);
             let [cx] = mouse(this);
-            console.log(cx)
             let [x0, x1] = [cx - dx / 2, cx + dx / 2].map(d => interval(xScale.invert(d)));
-            console.log([x0, x1])
-            // let [X0, X1] = xScale.range();
             let [X0, X1] = xScale.domain();
             select(this.parentNode)
                 .call(contextBrush.move, x1 > X1 ? [X1 - dx, X1].map(xScale) 
