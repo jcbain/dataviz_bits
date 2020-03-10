@@ -62,33 +62,69 @@ class ContextBrush extends Component {
             .call(g => g.select('.overlay')
             .datum({type: 'selection'})
             .on("mousedown touchstart", centerAroundTouch));
+
+        selectAll(`.${classStopName.start01}`).attr('offset', brushScale(this.props.startExtent.x0) + '%');
+        selectAll(`.${classStopName.start02}`).attr('offset', brushScale(this.props.startExtent.x0) + '%');
+        selectAll(`.${classStopName.end01}`).attr('offset', brushScale(this.props.startExtent.x1) + '%');
+        selectAll(`.${classStopName.end02}`).attr('offset', brushScale(this.props.startExtent.x1) + '%');
+
+
+        // select(node)
+        //     .select('g.brush')
+        //     .call(contextBrush)
+        //     .on('brush', brushended);
         
+        // function brushed() {
+        //     // console.log(event);
+        //     let selection = event.selection;
+
+        //     if (selection === null) {
+        //         selectAll('.left').attr('offset', '0%');
+        //         selectAll('.right').attr('offset', '0%')
+        //     } else {
+        //         let [x0, x1] = selection.map(xScale.invert);
+        //         // let x = selection.map(xScale.invert);
+        //         // let [x0, x1] = x.map(interval);
+        //         selectAll(`.${classStopName.start01}`).attr('offset', brushScale(x0) + '%');
+        //         selectAll(`.${classStopName.start02}`).attr('offset', brushScale(x0) + '%');
+        //         selectAll(`.${classStopName.end01}`).attr('offset', brushScale(x1) + '%');
+        //         selectAll(`.${classStopName.end02}`).attr('offset', brushScale(x1) + '%');
+                
+        //     }
+            
+        //     brushFn(selection.map(d => xScale.invert(d)))
+        // }
+
         function brushed() {
-            // console.log(event);
-            let selection = event.selection;
-            if (selection === null) {
+            const selection = event.selection;
+            if (!event.sourceEvent || !selection) return;
+            if (selection === null){
                 selectAll('.left').attr('offset', '0%');
                 selectAll('.right').attr('offset', '0%')
-            } else {
-                let [x0, x1] = selection.map(xScale.invert);
-                selectAll(`.${classStopName.start01}`).attr('offset', brushScale(x0) + '%');
-                selectAll(`.${classStopName.start02}`).attr('offset', brushScale(x0) + '%');
-                selectAll(`.${classStopName.end01}`).attr('offset', brushScale(x1) + '%');
-                selectAll(`.${classStopName.end02}`).attr('offset', brushScale(x1) + '%');
+            } else{
+                let [x0, x1] = selection.map(d => interval(xScale.invert(d)));
+                select(this).transition().call(contextBrush.move, x1 > x0 ? [x0, x1].map(xScale) : null);
+                selectAll(`.${classStopName.start01}`).transition().attr('offset', brushScale(x0) + '%');
+                selectAll(`.${classStopName.start02}`).transition().attr('offset', brushScale(x0) + '%');
+                selectAll(`.${classStopName.end01}`).transition().attr('offset', brushScale(x1) + '%');
+                selectAll(`.${classStopName.end02}`).transition().attr('offset', brushScale(x1) + '%');
+                brushFn(selection.map(d => xScale.invert(d)))
             }
-            
-            brushFn(selection.map(d => xScale.invert(d)))
-        }
+
+          }
 
         function centerAroundTouch() {
-            let dx = xScale(3000);
+            let dx = xScale(5000);
             let [cx] = mouse(this);
-            let [x0, x1] = [cx - dx / 2, cx + dx / 2];
-            let [X0, X1] = xScale.range();
+            console.log(cx)
+            let [x0, x1] = [cx - dx / 2, cx + dx / 2].map(d => interval(xScale.invert(d)));
+            console.log([x0, x1])
+            // let [X0, X1] = xScale.range();
+            let [X0, X1] = xScale.domain();
             select(this.parentNode)
-                .call(contextBrush.move, x1 > X1 ? [X1 - dx, X1] 
-                    : x0 < X0 ? [X0, X0 + dx] 
-                    : [x0, x1]);
+                .call(contextBrush.move, x1 > X1 ? [X1 - dx, X1].map(xScale) 
+                    : x0 < X0 ? [X0, X0 + dx].map(xScale) 
+                    : [x0, x1].map(xScale));
         }
 
         function closestFromArray (arr){
