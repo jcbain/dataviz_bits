@@ -7,13 +7,28 @@ body {
 .text-container {
     width: 80vw;
 }
+.divergent-top {
+    width: 100vw;
+    height: 50vh;
+    display: grid;
+    grid-template-columns: .5fr 2fr .5fr;
+}
+
+.divergent-bottom {
+    width: 100vw;
+}
+
+.genome-plot {
+    width: 20vw;
+}
 
 .focus-line-chart {
-    width: 80vw;
+    width: 60vw;
 }
 
 .context-line-chart {
-    width: 80vw;
+    width: 60vw;
+    margin: 0 auto;
 }
 
 .selection {

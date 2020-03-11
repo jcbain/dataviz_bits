@@ -6,7 +6,7 @@ import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
 import { line } from 'd3-shape';
 import ContextBrush from './ContextBrush';
-import { select, selectAll } from 'd3';
+import { select } from 'd3-selection';
 import { axisBottom } from 'd3-axis';
 
 class LineChart extends Component {
@@ -48,13 +48,7 @@ class LineChart extends Component {
             let node = select(ReactDOM.findDOMNode(this))
             node.append('g').call(this.xAxis);
         }
-
-
     }
-
-    componentDidUpdate() {}
-
-
       
 
     render() {   

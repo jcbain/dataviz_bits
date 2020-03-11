@@ -8,6 +8,7 @@ import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
 import data from './data/mutations_bg.json';
 import LineChart from './LineChart';
+import Genome from './Genome';
 
 
 
@@ -47,7 +48,7 @@ class App extends Component {
 
   render() {
     const margin = {top: 10, right: 0, bottom: 20, left: 0};
-    const chartDims = {width: 800, height: 100};
+    const chartDims = {width: 800, height: 150};
 
     let xScale = scaleLinear()
       .range([margin.left, chartDims.width - margin.right])
@@ -64,28 +65,38 @@ class App extends Component {
           <h1>Local Adaptation</h1>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. Sit amet aliquam id diam maecenas ultricies mi eget. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Nibh venenatis cras sed felis. Viverra adipiscing at in tellus integer feugiat scelerisque. Velit ut tortor pretium viverra suspendisse potenti. Lorem ipsum dolor sit amet consectetur adipiscing elit ut aliquam. Vitae elementum curabitur vitae nunc. Elementum facilisis leo vel fringilla est ullamcorper. Ullamcorper eget nulla facilisi etiam dignissim diam quis.</p>
         </div>
-        <div className="focus-line-chart"> 
-        <LineChart chartId = 'non-context'
-                     data={dataPopPhen} 
-                     xScale={xScale2} 
-                     margin={margin} 
-                     chartDims={{width: chartDims.width, height: 300}}
-                     classStopName={{start01: 'start-dull-poo', start02: 'start-color-poo', end01: 'end-color-poo', end02: 'end-dull-poo'}}
-                     renderBrush={false} 
-                     renderAxis={false}/>
+        <section id="divergent-plots">
+          <div className="divergent-top">
+            <div className="genome-plot">
+              <Genome />
+            </div>
+            <div className="focus-line-chart"> 
+            <LineChart chartId = 'non-context'
+                        data={dataPopPhen} 
+                        xScale={xScale2} 
+                        margin={margin} 
+                        chartDims={{width: chartDims.width, height: 400}}
+                        classStopName={{start01: 'start-dull-poo', start02: 'start-color-poo', end01: 'end-color-poo', end02: 'end-dull-poo'}}
+                        renderBrush={false} 
+                        renderAxis={false}/>
 
-        </div>
-        <div className="context-line-chart"> 
-          <LineChart chartId = 'context'
-                     data={dataPopPhen} 
-                     xScale={xScale} 
-                     changeBrush={this.onBrush}
-                     margin={margin} 
-                     chartDims={chartDims}
-                     classStopName={{start01: 'start-dull', start02: 'start-color', end01: 'end-color', end02: 'end-dull'}}
-                     renderBrush={true} 
-                     renderAxis={true}/>
-        </div>
+            </div>
+            <div className="genome-plot">
+              <Genome />
+            </div>
+          </div>
+          <div className="context-line-chart"> 
+            <LineChart chartId = 'context'
+                      data={dataPopPhen} 
+                      xScale={xScale} 
+                      changeBrush={this.onBrush}
+                      margin={margin} 
+                      chartDims={chartDims}
+                      classStopName={{start01: 'start-dull', start02: 'start-color', end01: 'end-color', end02: 'end-dull'}}
+                      renderBrush={true} 
+                      renderAxis={true}/>
+          </div>
+        </section>
       </div>
     )
   }

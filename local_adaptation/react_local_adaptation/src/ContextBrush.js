@@ -20,9 +20,9 @@ class ContextBrush extends Component {
         const node = this.node;
         const interval = closestFromArray(this.props.data.map(d => parseInt(d.output_gen)))
 
-        let xScale = this.props.xScale;
-        let classStopName = this.props.classStopName;
-        let brushFn = this.props.changeBrush;
+        const xScale = this.props.xScale;
+        const classStopName = this.props.classStopName;
+        const brushFn = this.props.changeBrush;
 
 
         const brushScale = scaleLinear()
