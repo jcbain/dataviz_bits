@@ -9,6 +9,7 @@ import { nest } from 'd3-collection';
 import data from './data/mutations_bg.json';
 import LineChart from './LineChart';
 import Genome from './Genome';
+import GenomeD from './GenomeD';
 
 
 data.forEach( d => 
@@ -90,7 +91,7 @@ class App extends Component {
 
             </div>
             <div className="genome-plot">
-              <Genome data={data}
+              <GenomeD data={data}
                       outputGen={this.state.focusBrushExtent[1]}
                       pop={1}/>
             </div>

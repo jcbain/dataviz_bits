@@ -30,8 +30,8 @@ class Genome extends Component {
     }
 
     componentDidUpdate(){
-        let node = ReactDOM.findDOMNode(this);
-        console.log(node);
+        // let node = ReactDOM.findDOMNode(this);
+        // console.log(node);
     }
 
 
