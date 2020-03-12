@@ -11,13 +11,12 @@ import LineChart from './LineChart';
 import Genome from './Genome';
 
 
-
 data.forEach( d => 
   d['positional_phen'] = d.freq * d.select_coef);
 
 let dataPopPhen = [];
 nest()
-  .key( d => [d.output_gen, d.pop, d.m, d.r, d.sigsqr])
+  .key( d => [d.output_gen, d.pop, d.m, d.mu, d.r, d.sigsqr])
   .rollup( v => sum(v, d => d.positional_phen))
   .entries(data)
   .forEach( d => {
@@ -32,6 +31,11 @@ nest()
     dataPopPhen.push(d)
   });
 
+  function closestFromArray (arr){
+    return (target) => arr.reduce(function(prev, curr){
+        return (Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev);
+    })
+}
 
 class App extends Component {
   constructor(props){
@@ -42,8 +46,10 @@ class App extends Component {
     this.state = { focusBrushExtent: [this.focusStartExent.x0, this.focusStartExent.x1]}
   }
 
+  interval = closestFromArray(dataPopPhen.map(d => parseInt(d.output_gen)))
+
   onBrush(d) {
-    this.setState({ focusBrushExtent: d})
+    this.setState({ focusBrushExtent: d.map(this.interval)})
   }
 
   render() {
@@ -68,7 +74,9 @@ class App extends Component {
         <section id="divergent-plots">
           <div className="divergent-top">
             <div className="genome-plot">
-              <Genome />
+              <Genome data={data} 
+                      outputGen={this.state.focusBrushExtent[0]}
+                      pop={0}/>
             </div>
             <div className="focus-line-chart"> 
             <LineChart chartId = 'non-context'
@@ -82,25 +90,31 @@ class App extends Component {
 
             </div>
             <div className="genome-plot">
-              <Genome />
+              <Genome data={data}
+                      outputGen={this.state.focusBrushExtent[1]}
+                      pop={1}/>
             </div>
           </div>
-          <div className="context-line-chart"> 
-            <LineChart chartId = 'context'
-                      data={dataPopPhen} 
-                      xScale={xScale} 
-                      changeBrush={this.onBrush}
-                      margin={margin} 
-                      chartDims={chartDims}
-                      classStopName={{start01: 'start-dull', start02: 'start-color', end01: 'end-color', end02: 'end-dull'}}
-                      renderBrush={true} 
-                      renderAxis={true}/>
+          <div className="divergent-bottom">
+            <div className="context-line-chart"> 
+              <LineChart chartId = 'context'
+                        data={dataPopPhen} 
+                        xScale={xScale} 
+                        changeBrush={this.onBrush}
+                        margin={margin} 
+                        chartDims={chartDims}
+                        classStopName={{start01: 'start-dull', start02: 'start-color', end01: 'end-color', end02: 'end-dull'}}
+                        renderBrush={true} 
+                        renderAxis={true}/>
+            </div>
           </div>
         </section>
       </div>
     )
   }
 }
+
+
 
 
 

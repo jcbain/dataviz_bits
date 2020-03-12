@@ -54,11 +54,8 @@ class LineChart extends Component {
     render() {   
     
         let dataFiltered = this.props.data.filter(function(d){
-            return d.mu === "1e-6" && d.m === "1e-4" && d.r === "2";
+            return d.mu === "1e-6" && d.m === "1e-4" && d.sigsqr === "2";
         })
-
-
-
 
         let dataGrouped = nest()
             .key( d => d.pop )
