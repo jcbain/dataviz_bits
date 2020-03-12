@@ -9,7 +9,6 @@ import { nest } from 'd3-collection';
 import data from './data/mutations_bg.json';
 import LineChart from './LineChart';
 import Genome from './Genome';
-import GenomeD from './GenomeD';
 
 
 data.forEach( d => 
@@ -75,9 +74,12 @@ class App extends Component {
         <section id="divergent-plots">
           <div className="divergent-top">
             <div className="genome-plot">
-              <Genome data={data} 
-                      outputGen={this.state.focusBrushExtent[0]}
-                      pop={0}/>
+              <Genome  key={`genome_${0}_${0}`}
+                        className={'genome1'}
+                        data={data} 
+                        outputGen={this.state.focusBrushExtent[0]}
+                        pop={0}
+                        id={0}/>
             </div>
             <div className="focus-line-chart"> 
             <LineChart chartId = 'non-context'
@@ -91,9 +93,12 @@ class App extends Component {
 
             </div>
             <div className="genome-plot">
-              <GenomeD data={data}
+              <Genome key={`genome_${1}_${0}`}
+                      className={'genome2'}
+                      data={data}
                       outputGen={this.state.focusBrushExtent[1]}
-                      pop={1}/>
+                      pop={0}
+                      id={1}/>
             </div>
           </div>
           <div className="divergent-bottom">
