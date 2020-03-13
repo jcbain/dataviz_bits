@@ -1,5 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
 
+/* COLOR SCHEMES */
+/* New Mexico from https://www.awwwards.com/sites/adult-swim-singles-2016
+   and https://visme.co/blog/website-color-schemes/
+    
+    rust (red):             #E27D60
+    robin (light blue):     #85DCB
+    circus peanut (orange): #E8A87C
+    plum:                   #C38D9E
+    torquoise:              #41B3A3
+    */
+
 body {
     font-family: 'Roboto Slab', serif;
 }
