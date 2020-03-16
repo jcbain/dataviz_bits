@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import './style.css';
 import { scaleLinear } from 'd3-scale';
 import { min, max } from 'd3-array';

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import './App.css';
-import template from './data/genome_template.json';
+import template from '../data/genome_template.json';
 import { scaleLinear, scaleOrdinal } from 'd3-scale';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';

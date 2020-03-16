@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
-import template from './data/genome_template.json';
+import template from '../data/genome_template.json';
 import { scaleLinear } from 'd3-scale';
 import { max } from 'd3-array';
 import { select } from 'd3-selection';

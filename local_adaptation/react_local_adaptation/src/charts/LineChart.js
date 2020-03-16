@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import './App.css';
 import { scaleLinear, scaleOrdinal } from 'd3-scale';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
