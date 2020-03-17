@@ -43,7 +43,7 @@ class LocalAdaptation extends Component {
     super(props);
     this.focusStartExent = {x0: 1000, x1: 5000};
     this.onBrush = this.onBrush.bind(this);
-
+    
     this.state = { 
       focusBrushExtent: [this.focusStartExent.x0, this.focusStartExent.x1],
       visible: false,
@@ -74,7 +74,7 @@ class LocalAdaptation extends Component {
   }
 
   render() {
-    
+    console.log(this.props.match.params.id);
 
     const margin = {top: 10, right: 0, bottom: 20, left: 0};
     const chartDims = {width: 800, height: 150};

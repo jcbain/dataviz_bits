@@ -3,18 +3,22 @@ import { Route, NavLink, Switch } from "react-router-dom";
 
 import './App.css';
 
-import  Home  from './pages/Home';
-import About from './pages/About';
-import Resources from './pages/Resources';
-import Collections from './pages/Collections';
+import routes from './routes'
 
-import LocalAdaptation from './pages/collections/LocalAdaptation';
+// import  Home  from './pages/Home';
+// import About from './pages/About';
+// import Resources from './pages/Resources';
+// import Collections from './pages/Collections';
+
+// import LocalAdaptation from './pages/collections/LocalAdaptation';
 
 
 class App extends Component {
+
   render() {
+    const routeComponents = routes.map(({path, component, refresh}, key) => <Route exact path={path} refresh={refresh} component={component} key={key} />);
     return (
-      <div class="main-wrapper">
+      <div className="main-wrapper">
         <header>
           <h1>Atlas of Population Genetics</h1>
           <div className="nav-links">
@@ -26,11 +30,13 @@ class App extends Component {
         </header>
         <div className="content">
             <Switch>
-                <Route exact path="/" component={Home}/>
+              {routeComponents}
+                {/* <Route exact path="/" component={Home}/>
                 <Route path="/about" component={About}/>
                 <Route path="/resources" component={Resources}/>
                 <Route exact path="/collections" component={Collections}/>
-                <Route refresh={true} path="/collections/localadaptation" component={ LocalAdaptation }/>
+                <Route refresh={true} path="/collections/:id" render={(props) => <LocalAdaptation {...props} />}/> */}
+                {/* <Route refresh={true} path="/collections/:id" component={ LocalAdaptation }/> */}
             </Switch>
         </div>
         </div>
