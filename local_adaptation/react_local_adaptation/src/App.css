@@ -1,0 +1,28 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    margin: 0;
+    padding: 0
+}
+
+.main-wrapper {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    width: 100vw;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    justify-content: center;
+    text-align: center;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: space-around;
+}
