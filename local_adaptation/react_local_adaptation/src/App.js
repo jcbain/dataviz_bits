@@ -16,7 +16,7 @@ import routes from './routes'
 class App extends Component {
 
   render() {
-    const routeComponents = routes.map(({path, component, refresh}, key) => <Route exact path={path} refresh={refresh} component={component} key={key} />);
+    const routeComponents = routes.map(({path, subpath, component, refresh}, key) => <Route exact path={!subpath ? path : `${path}/${subpath}`} refresh={refresh} component={component} key={key} />);
     return (
       <div className="main-wrapper">
         <header>

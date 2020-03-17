@@ -4,6 +4,7 @@ import Resources from './pages/Resources';
 import Collections from './pages/Collections';
 
 import LocalAdaptation from './pages/collections/LocalAdaptation';
+import SamplePage from './pages/collections/SamplePage'
 
 const routes = [{
     path: '/',
@@ -22,10 +23,17 @@ const routes = [{
     component: Collections,
     refresh: false
 },{
-    path: '/collections/:id',
+    path: '/collections',
     subpath: 'localadaptation',
     component: LocalAdaptation,
-    refresh: true
+    refresh: true,
+    displayName: 'Local Adaptation'
+},{
+    path: '/collections',
+    subpath: 'samplepage',
+    component: SamplePage,
+    refresh: true,
+    displayName: 'Sample Page'
 }
 ]
 
