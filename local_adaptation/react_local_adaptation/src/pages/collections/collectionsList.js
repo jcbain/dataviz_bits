@@ -1,13 +1,11 @@
-import LocalAdaptation from './pages/collections/LocalAdaptation';
-import SamplePage from './pages/collections/SamplePage'
+import LocalAdaptation from './LocalAdaptation';
+import SamplePage from './SamplePage'
 
 const collectionsList = [
     {
         id: 'local-adaptation',
         title: "Local Adaptation",
         component: LocalAdaptation
-        // component: LocalAdaptation
-
     },
     {
         id: 'sample-page',

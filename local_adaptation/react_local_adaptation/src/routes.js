@@ -2,9 +2,6 @@ import  Home  from './pages/Home';
 import About from './pages/About';
 import Resources from './pages/Resources';
 import Collections from './pages/Collections';
-
-import LocalAdaptation from './pages/collections/LocalAdaptation';
-import SamplePage from './pages/collections/SamplePage'
 import SingleCollection from './pages/SingleCollection';
 
 const routes = [{

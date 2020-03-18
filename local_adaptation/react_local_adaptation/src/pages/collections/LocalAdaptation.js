@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { sum } from 'd3-array'
 import { scaleLinear } from 'd3-scale';
 import { min, max } from 'd3-array';
-import {withRouter} from 'react-router-dom';
 
 
 import { nest } from 'd3-collection';

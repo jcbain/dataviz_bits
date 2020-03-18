@@ -1,14 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import routes from '../routes';
+import collectionsList from './collections/collectionsList';
 
 
 
-function Collections(props){
+function Collections({match},props){
     console.log(props)
 
-    const collectionCards = routes.map(({path, subpath, displayName}, key) => path === '/collections' && subpath ? <div key={key} className="card collection-item"><Link to={`${props.match.url}/${subpath}`}><h2>{displayName}</h2></Link></div> : null)
+    const collectionCards = collectionsList.map(({id, title}) => (
+        <div className="collection-card" key={id}>
+            <Link to={`${match.url}/${id}`}>{title}</Link>
+        </div>
+    ))
 
     return(
         <div>
