@@ -26,19 +26,6 @@ const routes = [{
     component: SingleCollection,
     refresh: true
 }
-// {
-//     path: '/collections',
-//     subpath: 'localadaptation',
-//     component: LocalAdaptation,
-//     refresh: true,
-//     displayName: 'Local Adaptation'
-// },{
-//     path: '/collections',
-//     subpath: 'samplepage',
-//     component: SamplePage,
-//     refresh: true,
-//     displayName: 'Sample Page'
-// }
 
 ]
 
