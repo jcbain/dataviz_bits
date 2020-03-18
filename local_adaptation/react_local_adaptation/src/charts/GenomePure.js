@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import template from '../data/genome_template.json';
-import { scaleLinear, scaleOrdinal } from 'd3-scale';
-import { min, max } from 'd3-array';
-import { nest } from 'd3-collection';
-import { select, selectAll } from 'd3-selection';
+import { scaleLinear } from 'd3-scale';
+import { max } from 'd3-array';
 
 
 function checkPhenVal(val){

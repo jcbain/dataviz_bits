@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { sum } from 'd3-array'
 import { scaleLinear } from 'd3-scale';
 import { min, max } from 'd3-array';
+import {withRouter} from 'react-router-dom';
 
 
 import { nest } from 'd3-collection';
@@ -9,7 +10,6 @@ import data from '../../data/mutations_bg.json';
 import LineChart from '../../charts/LineChart';
 import Genome from '../../charts/Genome';
 
-import ScrollTrigger from 'react-scroll-trigger';
 
 
 data.forEach( d => 
@@ -46,25 +46,8 @@ class LocalAdaptation extends Component {
     
     this.state = { 
       focusBrushExtent: [this.focusStartExent.x0, this.focusStartExent.x1],
-      visible: false,
     }
     this.interval = closestFromArray(dataPopPhen.map(d => parseInt(d.output_gen)))
-
-    this.onEnterViewport = this.onEnterViewport.bind(this);
-    this.onExitViewport = this.onEnterViewport.bind(this);
-  }
-  
-
-  onEnterViewport() {
-    this.setState({
-      visible: true,
-    });
-  }
- 
-  onExitViewport() {
-    this.setState({
-      visible: false,
-    });
   }
 
   
@@ -74,14 +57,11 @@ class LocalAdaptation extends Component {
   }
 
   render() {
-    console.log(this.props.match.params.id);
+    console.log(this.props.match);
 
     const margin = {top: 10, right: 0, bottom: 20, left: 0};
     const chartDims = {width: 800, height: 150};
-    const { visible } = this.state;
 
-
-    console.log(visible)
 
     let xScale = scaleLinear()
       .range([margin.left, chartDims.width - margin.right])
@@ -113,9 +93,9 @@ class LocalAdaptation extends Component {
                         pop={0}
                         id={0}/>
             </div>
-            <ScrollTrigger onEnter={this.onEnterViewport} onExit={this.onExitViewport}> 
+        
 
-            <div className={`focus-line-chart container ${visible ? 'container-animate' : ''}`}> 
+            <div className={`focus-line-chart container`}> 
               <LineChart chartId = 'non-context'
                           data={dataPopPhen} 
                           xScale={xScale2} 
@@ -126,7 +106,6 @@ class LocalAdaptation extends Component {
                           renderAxis={false}/>
 
               </div>
-            </ScrollTrigger>
             <div className="genome-plot">
               <Genome key={`genome_${1}_${0}`}
                       className={'genome2'}

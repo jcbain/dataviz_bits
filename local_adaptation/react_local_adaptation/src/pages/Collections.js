@@ -8,7 +8,7 @@ import routes from '../routes';
 function Collections(props){
     console.log(props)
 
-    const collectionCards = routes.map(({path, subpath, displayName}) => path === '/collections' && subpath ? <div className="card collection-item"><Link to={`${props.match.url}/${subpath}`}><h2>{displayName}</h2></Link></div> : null)
+    const collectionCards = routes.map(({path, subpath, displayName}, key) => path === '/collections' && subpath ? <div key={key} className="card collection-item"><Link to={`${props.match.url}/${subpath}`}><h2>{displayName}</h2></Link></div> : null)
 
     return(
         <div>

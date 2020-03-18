@@ -5,6 +5,7 @@ import Collections from './pages/Collections';
 
 import LocalAdaptation from './pages/collections/LocalAdaptation';
 import SamplePage from './pages/collections/SamplePage'
+import SingleCollection from './pages/SingleCollection';
 
 const routes = [{
     path: '/',
@@ -22,19 +23,26 @@ const routes = [{
     path: '/collections',
     component: Collections,
     refresh: false
-},{
-    path: '/collections',
-    subpath: 'localadaptation',
-    component: LocalAdaptation,
-    refresh: true,
-    displayName: 'Local Adaptation'
-},{
-    path: '/collections',
-    subpath: 'samplepage',
-    component: SamplePage,
-    refresh: true,
-    displayName: 'Sample Page'
+},
+{
+    path: '/collections/:collectionId',
+    component: SingleCollection,
+    refresh: true
 }
+// {
+//     path: '/collections',
+//     subpath: 'localadaptation',
+//     component: LocalAdaptation,
+//     refresh: true,
+//     displayName: 'Local Adaptation'
+// },{
+//     path: '/collections',
+//     subpath: 'samplepage',
+//     component: SamplePage,
+//     refresh: true,
+//     displayName: 'Sample Page'
+// }
+
 ]
 
 export default routes;

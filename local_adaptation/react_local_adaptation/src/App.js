@@ -15,10 +15,13 @@ import routes from './routes'
 
 class App extends Component {
 
+
   render() {
-    const routeComponents = routes.map(({path, subpath, component, refresh}, key) => <Route exact path={!subpath ? path : `${path}/${subpath}`} refresh={refresh} component={component} key={key} />);
+    // const routeComponents = routes.map(({path, subpath, component, refresh}, key) => <Route exact path={!subpath ? path : `${path}/${subpath}`} refresh={refresh} component={component} key={key} />);
+    const routeComponents = routes.map(({path, component, refresh}, key) => <Route exact path={path} refresh={refresh} component={component} key={key} />);
     return (
-      <div className="main-wrapper">
+
+        <div className="content">
         <header>
           <h1>Atlas of Population Genetics</h1>
           <div className="nav-links">
@@ -28,7 +31,6 @@ class App extends Component {
             <p><NavLink to="/collections">Collection</NavLink></p>
           </div>
         </header>
-        <div className="content">
             <Switch>
               {routeComponents}
                 {/* <Route exact path="/" component={Home}/>
@@ -39,7 +41,7 @@ class App extends Component {
                 {/* <Route refresh={true} path="/collections/:id" component={ LocalAdaptation }/> */}
             </Switch>
         </div>
-        </div>
+
 
     );
   }

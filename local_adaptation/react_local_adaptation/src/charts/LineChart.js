@@ -15,6 +15,7 @@ class LineChart extends Component {
         this.startExtent = {x0: 1000, x1: 5000};
         
         this.state = { brushExtent: [this.startExtent.x0, this.startExtent.x1]}
+        console.log(this.props)
     }
     
     yScale = scaleLinear()
