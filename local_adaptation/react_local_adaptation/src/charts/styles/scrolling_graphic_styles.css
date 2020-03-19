@@ -1,6 +1,6 @@
-.scroller-main {
+/* .scroller-main {
     display: flex;
-    padding: 70vh 2vw;
+    padding: 50vh 0vw;
     font-family: Helvetica;
     justify-content: space-between;
 }
@@ -12,47 +12,54 @@
     position: sticky;
     align-self: flex-start;
     flex-basis: 60%;
-    background-color: #aaa;
+}
+
+.scroller-graphic p {
+    font-size: 10vh;
+    color: goldenrod;
 }
 
 .scroller {
     flex-basis: 35%;
 }
 
-/* .scroller-graphic p {
-    text-align: center;
-    padding: 1rem;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -moz-transform: translate(-50%, -50%);
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    font-size: 8rem;
-    font-weight: 900;
-    color: #fff;
-  } */
 
 .scroller-step {
     border: 1px solid #333;
-    margin: 0 auto 2rem auto;
+    height: 20vh; 
+    margin-bottom: 5vh;
     padding-top: 20px;
     padding-bottom: 20px;
-    width: 100px;
+    width: 200px;
+} */
+
+.scroller-main {
+    max-width: 60rem;
+    margin: 3rem auto;
+    background-color: #f4f4f4;
+    padding: 1rem;
 }
 
-/* .scroller-step:last-child {
-    margin-bottom: 0;
-  }
+.scroller-graphic {
+    position: -webkit-sticky;
+    position: sticky;
+    width: 100%;
+    background: #969696;
+    margin: 0;
+    top: 25vh;
+    height: 50vh;
+    left: 0;
+}
 
-  .scroller-step.is-active p {
-    background-color: goldenrod;
-    color: #3b3b3b;
-  }
+.scroller {
+    padding: 0;
+    max-width: 30rem;
+    margin: 0 auto;
+    position: relative;
 
-  .scroller-step p {
-    text-align: center;
-    padding: 1rem;
-    font-size: 1.5rem;
-    background-color: #3b3b3b;
-  } */
+}
+
+.scroller-step {
+    min-height: 67vh;
+    margin-bottom: 1rem;
+}

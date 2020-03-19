@@ -29,6 +29,9 @@ class Graphic extends Component {
     
         return (
           <div className="scroller-main">
+                          <div className="scroller-graphic">
+              <p>{data}</p>
+            </div>
             <div className="scroller">
               <Scrollama
                 onStepEnter={this.onStepEnter}
@@ -41,16 +44,14 @@ class Graphic extends Component {
                 {steps.map(value => (
                   <Step data={value} key={value}>
                     <div className="scroller-step">
-                      <p className="text-container">step value: {value}</p>
+                      <p>step value: {value}</p>
                       <p>{value === data && progress}</p>
                     </div>
                   </Step>
                 ))}
               </Scrollama>
             </div>
-            <div className="scroller-graphic">
-              <p>{data}</p>
-            </div>
+
           </div>
         );
       }
