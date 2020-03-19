@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Oswald:wght@200;300;400;500&display=swap');
 /* COLOR SCHEMES */
 /* New Mexico from https://www.awwwards.com/sites/adult-swim-singles-2016
    and https://visme.co/blog/website-color-schemes/
@@ -12,7 +13,21 @@
     */
 
 body {
-    font-family: 'Roboto Slab', serif;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #8cc0ae;
+}
+
+.collection-title-container {
+    width: 100vw;
+    padding: 7vw;
+}
+
+.collection-title {
+    font-family: 'Oswald', sans-serif;
+    font-variation-settings: 'wdth' 500, 'wght' 400;
+    font-size: 10vh;
+    text-shadow: 2px 1px #41B3A3;
+    color: white;
 }
 
 .text-container {

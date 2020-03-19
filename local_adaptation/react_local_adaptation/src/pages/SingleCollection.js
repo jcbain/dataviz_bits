@@ -6,7 +6,9 @@ function SingleCollection({match}, props){
     const collection = collectionsList.find(({id}) => id === match.params.collectionId)
     return(
         <div className="collection-item">
-            <h1>{collection.title}</h1>
+            <div className="banner title-banner collection-title-container">
+                <h1 className="collection-title">{collection.title.toLocaleUpperCase()}</h1>
+            </div>
             <collection.component />
         </div>
     )
