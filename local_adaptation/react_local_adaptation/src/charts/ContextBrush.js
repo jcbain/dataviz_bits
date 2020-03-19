@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import './style.css';
 import { scaleLinear } from 'd3-scale';
 import { min, max } from 'd3-array';
 import { brushX } from 'd3-brush';
 import { select, selectAll, event, mouse } from 'd3-selection';
+
 
 class ContextBrush extends Component {
     constructor(props) {

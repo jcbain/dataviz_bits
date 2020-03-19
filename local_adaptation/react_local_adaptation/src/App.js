@@ -5,14 +5,6 @@ import './App.css';
 
 import routes from './routes'
 
-// import  Home  from './pages/Home';
-// import About from './pages/About';
-// import Resources from './pages/Resources';
-// import Collections from './pages/Collections';
-
-// import LocalAdaptation from './pages/collections/LocalAdaptation';
-
-
 class App extends Component {
 
 

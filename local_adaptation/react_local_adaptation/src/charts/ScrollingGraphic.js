@@ -1,31 +1,59 @@
 import React, { Component } from 'react';
 import { Scrollama, Step } from 'react-scrollama';
  
-class Graphic extends Component {
-  state = {
-    data: 0,
-  };
- 
-  onStepEnter = ({ element, data, direction }) => this.setState({ data });
- 
-  render() {
-    const { data } = this.state;
- 
-    return (
-      <div>
-        <p>data: {data}</p>
-        <Scrollama onStepEnter={this.onStepEnter}>
-          <Step data={1}>
-          <p>STEP 1 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. Sit amet aliquam id diam maecenas ultricies mi eget. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Nibh venenatis cras sed felis. Viverra adipiscing at in tellus integer feugiat scelerisque. Velit ut tortor pretium viverra suspendisse potenti. Lorem ipsum dolor sit amet consectetur adipiscing elit ut aliquam. Vitae elementum curabitur vitae nunc. Elementum facilisis leo vel fringilla est ullamcorper. Ullamcorper eget nulla facilisi etiam dignissim diam quis.</p>
+import './styles/scrolling_graphic_styles.css';
 
-          </Step>
-          <Step data={2}>
-          <p>STEP 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. Sit amet aliquam id diam maecenas ultricies mi eget. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Nibh venenatis cras sed felis. Viverra adipiscing at in tellus integer feugiat scelerisque. Velit ut tortor pretium viverra suspendisse potenti. Lorem ipsum dolor sit amet consectetur adipiscing elit ut aliquam. Vitae elementum curabitur vitae nunc. Elementum facilisis leo vel fringilla est ullamcorper. Ullamcorper eget nulla facilisi etiam dignissim diam quis.</p>
-          </Step>
-        </Scrollama>
-      </div>
-    );
-  }
+class Graphic extends Component {
+    state = {
+        data: 0,
+        steps: [10, 20, 30],
+        progress: 0,
+      };
+    
+      onStepEnter = ({ element, data }) => {
+        element.style.backgroundColor = 'lightgoldenrodyellow';
+        this.setState({ data });
+      };
+    
+      onStepExit = ({ element }) => {
+        element.style.backgroundColor = '#fff';
+      };
+    
+      onStepProgress = ({ element, progress }) => {
+        this.setState({ progress });
+      }
+    
+      render() {
+        const { data, steps, progress } = this.state;
+        const { classes } = this.props;
+    
+        return (
+          <div className="scroller-main">
+            <div className="scroller">
+              <Scrollama
+                onStepEnter={this.onStepEnter}
+                onStepExit={this.onStepExit}
+                progress
+                onStepProgress={this.onStepProgress}
+                offset={0.33}
+                debug
+              >
+                {steps.map(value => (
+                  <Step data={value} key={value}>
+                    <div className="scroller-step">
+                      <p className="text-container">step value: {value}</p>
+                      <p>{value === data && progress}</p>
+                    </div>
+                  </Step>
+                ))}
+              </Scrollama>
+            </div>
+            <div className="scroller-graphic">
+              <p>{data}</p>
+            </div>
+          </div>
+        );
+      }
 }
 
 export default Graphic;
