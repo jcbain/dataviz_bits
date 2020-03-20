@@ -1,54 +1,20 @@
-/* .scroller-main {
-    display: flex;
-    padding: 50vh 0vw;
-    font-family: Helvetica;
-    justify-content: space-between;
-}
-
-.scroller-graphic {
-    top: 160px;
-    width: 100%;
-    padding: 5rem 0;
-    position: sticky;
-    align-self: flex-start;
-    flex-basis: 60%;
-}
-
-.scroller-graphic p {
-    font-size: 10vh;
-    color: goldenrod;
-}
-
-.scroller {
-    flex-basis: 35%;
-}
-
-
-.scroller-step {
-    border: 1px solid #333;
-    height: 20vh; 
-    margin-bottom: 5vh;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    width: 200px;
-} */
 
 .scroller-main {
     max-width: 60rem;
     margin: 3rem auto;
-    background-color: #f4f4f4;
     padding: 1rem;
+    border: 1px solid black;
 }
 
 .scroller-graphic {
     position: -webkit-sticky;
     position: sticky;
     width: 100%;
-    background: #969696;
     margin: 0;
-    top: 25vh;
-    height: 50vh;
+    top: 10vh;
+    height: 65vh;
     left: 0;
+    border: 1px dashed gray;
 }
 
 .scroller {

@@ -20,7 +20,7 @@ class Genome extends Component {
         const pop = this.props.pop;
 
         let dataFiltered = this.props.data.filter(function(d) {
-            return d.mu === "1e-6" && d.m === "1e-4" && d.sigsqr === "2" && d.output_gen === outputGen && d.pop === pop;
+            return d.mu === "1e-6" && d.m === "1e-5" && d.sigsqr === "25" && d.output_gen === outputGen && d.pop === pop;
         })
         
         let dataCurrentGenome = []
