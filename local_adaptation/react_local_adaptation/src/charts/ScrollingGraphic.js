@@ -13,7 +13,8 @@ import './styles/scrolling_graphic_styles.css';
 class Graphic extends Component {
     constructor(props){
         super(props);
-        this.squareSize = 10;
+        this.squareSize = 5;
+        this.numCols = 50;
         this.genCounts = individualData.map(d => d.pop).filter(unique).map(v => countIndividaulsPerGeneration(individualData, v))
         this.populations = individualData.map(d => d.pop).filter(unique)
         this.maxPopVal = maxPerPop(this.genCounts);
@@ -29,6 +30,7 @@ class Graphic extends Component {
       popRef = React.createRef();
 
       createData(){
+        const numCols = this.numCols;
         let filteredData = individualData.filter(d => d.mu === "1e-6" && d.m === "1e-4" && d.sigsqr === "25" && d.output_gen === this.state.outputGen)
         let chosenData = [];
         this.populations.map(d => {
@@ -39,6 +41,7 @@ class Graphic extends Component {
             x['pop'] = val;
             let result = filteredData.filter(d => d.pop == val)[v];
             x['ind_phen'] = (result !== undefined) ? result.ind_phen : 0;
+
             chosenData.push(x);
           })
         })
@@ -47,6 +50,22 @@ class Graphic extends Component {
           { asc: u => u.pop },
           { asc: u => u.ind_phen }
         ]);
+
+        
+
+        this.populations.map(d => {
+          let currentYIndex = 1;
+          chosenData.filter(v => v.pop == d).forEach(function(r, i){
+            if(i/(numCols - 1) >= currentYIndex) {
+              r['y'] = currentYIndex - 1;
+              currentYIndex++
+            } else {
+              r['y'] = currentYIndex - 1;
+            }
+          })
+        })
+
+
         return chosenData;
 
       }
