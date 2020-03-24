@@ -54,6 +54,7 @@ class Graphic extends Component {
         
 
         this.populations.map(d => {
+          let shifter = d * numCols;
           let currentYIndex = 1;
           let currentXIndex = 0;
           chosenData.filter(v => v.pop == d).forEach(function(r, i){
@@ -64,10 +65,10 @@ class Graphic extends Component {
               r['y'] = currentYIndex - 1;
             }
             if((i + 1) % (numCols) === 0){
-              r['x'] = currentXIndex;
+              r['x'] = currentXIndex + shifter;
               currentXIndex = 0
             } else {
-              r['x'] = currentXIndex;
+              r['x'] = currentXIndex + shifter;
               currentXIndex++;
             }
           })
