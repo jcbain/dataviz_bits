@@ -129,6 +129,10 @@ class Graphic extends Component {
       onStepExit = ({ element }) => {
         element.style.border = '1px solid black';
         selectAll('.pop_rects')
+          .transition()
+          .attr('width', 0)
+          .attr('height', 0)
+          .duration(1000)
         .remove()
       };
     
