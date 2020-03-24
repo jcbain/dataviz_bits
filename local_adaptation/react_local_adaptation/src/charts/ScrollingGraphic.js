@@ -3,6 +3,7 @@ import { Scrollama, Step } from 'react-scrollama';
 
 import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
+import { easeBounce, easeSinInOut } from 'd3-ease';
 import { select, selectAll } from 'd3-selection';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
@@ -26,10 +27,10 @@ class Graphic extends Component {
                             .interpolate(interpolateHcl);
 
         this.state = {
-            data: 0,
-            steps: [10, 20, 30],
+            data: 1000,
+            steps: [10000, 20000, 50000],
             progress: 0,
-            outputGen: 20000,
+            outputGen: 1000,
           };
     }
 
@@ -37,7 +38,7 @@ class Graphic extends Component {
 
       createData(){
         const numCols = this.numCols;
-        let filteredData = individualData.filter(d => d.mu === "1e-6" && d.m === "1e-4" && d.sigsqr === "25" && d.output_gen === this.state.outputGen)
+        let filteredData = individualData.filter(d => d.mu === "1e-6" && d.m === "1e-4" && d.sigsqr === "25" && d.output_gen == this.state.data)
         let chosenData = [];
         this.populations.map(d => {
           let val = d;
@@ -86,14 +87,15 @@ class Graphic extends Component {
       }
 
       componentDidMount(){
-          console.log(this.maxPopVal)
-          console.log(this.createData())
+          // console.log(this.maxPopVal)
+          // console.log(this.createData())
           console.log(this.state)
           select(this.popRef.current)
-            .selectAll('rect')  
+            .selectAll('.pop_rects')  
             .data(this.createData())
             .enter()
             .append('rect')
+            .attr('class', 'pop_rects')
             .attr('x', (d, i) => (((d.x) * this.squareSize ) ))
             .attr('y', d => d.y * this.squareSize)
             .attr('height', this.squareSize)
@@ -102,19 +104,32 @@ class Graphic extends Component {
           
       }
     
-      onStepEnter = ({ element, data }) => {
+      onStepEnter = ({ element, data}) => {
         element.style.border = '1px solid goldenrod';
         this.setState({ data });
-        selectAll('rect')
-            .transition()
-            .attr('fill', 'green')
+        select(this.popRef.current)
+          .selectAll('.pop_rects')  
+          .data(this.createData())
+          .enter()
+          .append('rect')
+          .attr('class', 'pop_rects')
+          .attr('x', (d, i) => {
+            return ((d.x * 1.5)* this.squareSize) + d.pop * 50;
+          })
+          .attr('y', d => (d.y * 1.5) * this.squareSize)
+          .transition()
+          .attr('height', this.squareSize)
+          .attr('width', this.squareSize)
+          
+          .attr('fill', d => this.colorScale(d.ind_phen))
+          .duration(1000)
+          .ease(easeSinInOut)
       };
     
       onStepExit = ({ element }) => {
         element.style.border = '1px solid black';
-        selectAll('rect')
-        .transition()
-        .attr('fill', '#fffff7')
+        selectAll('.pop_rects')
+        .remove()
       };
     
       onStepProgress = ({ element, progress }) => {
@@ -124,14 +139,14 @@ class Graphic extends Component {
       render() {
         // console.log(individualData)
 
-        const { data, steps, progress } = this.state;
+        const { data, steps, progress} = this.state;
         const { classes } = this.props;
     
         return (
           <div className="scroller-main">
             <svg className="scroller-graphic"
                  viewBox={[0, 0, 50, 200]}
-                 preserveAspectRatio="xMinYMin meet">
+                 preserveAspectRatio="xMinYMin meet">  
                 <g ref={this.popRef}></g>
                 <text x="20" y="35" className="small">{data}</text>
             </svg>
@@ -144,14 +159,31 @@ class Graphic extends Component {
                 offset={0.25}
                 debug
               >
-                {steps.map(value => (
+                <Step data={10000}>
+                  <div className="scroller-step">
+                    <p>And at 10,000th generation</p>
+                  </div>
+                </Step>
+
+                <Step data={20000}>
+                  <div className="scroller-step">
+                    <p>And at 20,000th generation</p>
+                  </div>
+                </Step>
+
+                <Step data={50000}>
+                  <div className="scroller-step">
+                    <p>And at 50,000th generation</p>
+                  </div>
+                </Step>
+                {/* {steps.map(value => (
                   <Step data={value} key={value}>
                     <div className="scroller-step">
                       <p>step value: {value}</p>
                       <p>{value === data && progress}</p>
                     </div>
                   </Step>
-                ))}
+                ))} */}
               </Scrollama>
             </div>
 
