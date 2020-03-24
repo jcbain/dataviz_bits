@@ -57,10 +57,10 @@ class Graphic extends Component {
           console.log(this.state)
           select(this.popRef.current)
             .selectAll('rect')  
-            .data([1,2,3,4, 5, 6, 7, 8, 9])
+            .data([1,2,3,4, 5, 6, 7, 8, 9, 1,2,3,4, 5, 6, 7, 8, 9])
             .enter()
             .append('rect')
-            .attr('x', (d, i) => (i * this.squareSize )+ 2)
+            .attr('x', (d, i) => ((i) * this.squareSize ))
             .attr('y', 10)
             .attr('height', this.squareSize)
             .attr('width', this.squareSize)
@@ -96,7 +96,8 @@ class Graphic extends Component {
         return (
           <div className="scroller-main">
             <svg className="scroller-graphic"
-                 viewBox={[0, 0, 50, 200]}>
+                 viewBox={[0, 0, 50, 200]}
+                 preserveAspectRatio="xMinYMin meet">
                 <g ref={this.popRef}></g>
                 <text x="20" y="35" className="small">{data}</text>
             </svg>
