@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Scrollama, Step } from 'react-scrollama';
 
+import { scaleLinear } from 'd3-scale';
+import { interpolateHcl } from 'd3-interpolate';
 import { select, selectAll } from 'd3-selection';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
@@ -13,17 +15,21 @@ import './styles/scrolling_graphic_styles.css';
 class Graphic extends Component {
     constructor(props){
         super(props);
-        this.squareSize = 5;
-        this.numCols = 50;
+        this.squareSize = 3;
+        this.numCols = 25;
         this.genCounts = individualData.map(d => d.pop).filter(unique).map(v => countIndividaulsPerGeneration(individualData, v))
         this.populations = individualData.map(d => d.pop).filter(unique)
         this.maxPopVal = maxPerPop(this.genCounts);
+        this.colorScale = scaleLinear()
+                            .domain([-1, 0, 1])
+                            .range(['#C38D9E', '#fffff7', '#E27D60'])
+                            .interpolate(interpolateHcl);
 
         this.state = {
             data: 0,
             steps: [10, 20, 30],
             progress: 0,
-            outputGen: 1000,
+            outputGen: 20000,
           };
     }
 
@@ -58,7 +64,7 @@ class Graphic extends Component {
           let currentYIndex = 1;
           let currentXIndex = 0;
           chosenData.filter(v => v.pop == d).forEach(function(r, i){
-            if(i/(numCols - 1) >= currentYIndex) {
+            if((i + 1)/(numCols) >= currentYIndex) {
               r['y'] = currentYIndex - 1;
               currentYIndex++
             } else {
@@ -85,14 +91,14 @@ class Graphic extends Component {
           console.log(this.state)
           select(this.popRef.current)
             .selectAll('rect')  
-            .data([1,2,3,4, 5, 6, 7, 8, 9, 1,2,3,4, 5, 6, 7, 8, 9])
+            .data(this.createData())
             .enter()
             .append('rect')
-            .attr('x', (d, i) => ((i) * this.squareSize ))
-            .attr('y', 10)
+            .attr('x', (d, i) => (((d.x) * this.squareSize ) ))
+            .attr('y', d => d.y * this.squareSize)
             .attr('height', this.squareSize)
             .attr('width', this.squareSize)
-            .attr('fill', '#fffff7')
+            .attr('fill', d => this.colorScale(d.ind_phen))
           
       }
     
