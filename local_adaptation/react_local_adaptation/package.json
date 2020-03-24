@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.1.2",
     "d3": "5.15.0",
     "d3-svg-legend": "^2.25.6",
+    "fast-sort": "^2.1.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2",

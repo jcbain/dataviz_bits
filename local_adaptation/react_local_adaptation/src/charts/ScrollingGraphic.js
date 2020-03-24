@@ -4,6 +4,7 @@ import { Scrollama, Step } from 'react-scrollama';
 import { select, selectAll } from 'd3-selection';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
+import sort from 'fast-sort'
 
 import individualData from '../data/individuals_small';
  
@@ -14,27 +15,52 @@ class Graphic extends Component {
         super(props);
         this.squareSize = 10;
         this.genCounts = individualData.map(d => d.pop).filter(unique).map(v => countIndividaulsPerGeneration(individualData, v))
+        this.populations = individualData.map(d => d.pop).filter(unique)
         this.maxPopVal = maxPerPop(this.genCounts);
-        
+
         this.state = {
             data: 0,
             steps: [10, 20, 30],
             progress: 0,
-            output_gen: 1000,
+            outputGen: 1000,
           };
     }
 
-
       popRef = React.createRef();
+
+      createData(){
+        let filteredData = individualData.filter(d => d.mu === "1e-6" && d.m === "1e-4" && d.sigsqr === "25" && d.output_gen === this.state.outputGen)
+        let chosenData = [];
+        this.populations.map(d => {
+          let val = d;
+          let popIndexes = new Array(this.maxPopVal[val]);
+          [...popIndexes.keys()].map(function(v) {
+            let x = {};
+            x['pop'] = val;
+            let result = filteredData.filter(d => d.pop == val)[v];
+            x['ind_phen'] = (result !== undefined) ? result.ind_phen : 0;
+            chosenData.push(x);
+          })
+        })
+
+        sort(chosenData).by([
+          { asc: u => u.pop },
+          { asc: u => u.ind_phen }
+        ]);
+        return chosenData;
+
+      }
 
       componentDidMount(){
           console.log(this.maxPopVal)
+          console.log(this.createData())
+          console.log(this.state)
           select(this.popRef.current)
             .selectAll('rect')  
-            .data([1,2,3,4])
+            .data([1,2,3,4, 5, 6, 7, 8, 9])
             .enter()
             .append('rect')
-            .attr('x', (d, i) => i * this.squareSize)
+            .attr('x', (d, i) => (i * this.squareSize )+ 2)
             .attr('y', 10)
             .attr('height', this.squareSize)
             .attr('width', this.squareSize)
@@ -116,5 +142,7 @@ const maxPerPop = (data) => {
   })
   return maxPop;
 }
+
+
 
 export default Graphic;
