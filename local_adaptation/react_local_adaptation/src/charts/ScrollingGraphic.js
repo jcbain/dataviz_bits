@@ -16,8 +16,9 @@ import './styles/scrolling_graphic_styles.css';
 class Graphic extends Component {
     constructor(props){
         super(props);
-        this.squareSize = 3;
+        this.squareSize = 10;
         this.numCols = 25;
+        this.individualPadding = 1.5
         this.genCounts = individualData.map(d => d.pop).filter(unique).map(v => countIndividaulsPerGeneration(individualData, v))
         this.populations = individualData.map(d => d.pop).filter(unique)
         this.maxPopVal = maxPerPop(this.genCounts);
@@ -98,6 +99,8 @@ class Graphic extends Component {
             .attr('class', 'pop_rects')
             .attr('x', (d, i) => (((d.x) * this.squareSize ) ))
             .attr('y', d => d.y * this.squareSize)
+            .attr('rx', 2)
+            .attr('ry', 2)
             .attr('height', this.squareSize)
             .attr('width', this.squareSize)
             .attr('fill', d => this.colorScale(d.ind_phen))
@@ -114,9 +117,11 @@ class Graphic extends Component {
           .append('rect')
           .attr('class', 'pop_rects')
           .attr('x', (d, i) => {
-            return ((d.x * 1.5)* this.squareSize) + d.pop * 50;
+            return ((d.x * 1.5)* this.squareSize) + d.pop * 0;
           })
           .attr('y', d => (d.y * 1.5) * this.squareSize)
+          .attr('rx', 2)
+          .attr('ry', 2)
           .transition()
           .attr('height', this.squareSize)
           .attr('width', this.squareSize)
@@ -149,9 +154,14 @@ class Graphic extends Component {
         return (
           <div className="scroller-main">
             <svg className="scroller-graphic"
-                 viewBox={[0, 0, 50, 200]}
-                 preserveAspectRatio="xMinYMin meet">  
-                <g ref={this.popRef}></g>
+                 viewBox={[0, 0, (this.squareSize * this.numCols * this.individualPadding * 2)  - this.individualPadding, 100]}
+                 >  
+                <svg x="0" 
+                     y="0" 
+                     viewBox={[0, 0, (this.squareSize * this.numCols * this.individualPadding * 2) - this.individualPadding, 100]} 
+                     preserveAspectRatio="xMinYMid meet" 
+                     ref={this.popRef}
+                     className="pop-graphic"></svg>
                 <text x="20" y="35" className="small">{data}</text>
             </svg>
             <div className="scroller">
