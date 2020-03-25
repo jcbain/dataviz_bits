@@ -18,7 +18,7 @@ class Graphic extends Component {
         super(props);
         this.squareSize = 10;
         this.numCols = 25;
-        this.individualPadding = 1.5
+        this.individualPadding = 1.2
         this.genCounts = individualData.map(d => d.pop).filter(unique).map(v => countIndividaulsPerGeneration(individualData, v))
         this.populations = individualData.map(d => d.pop).filter(unique)
         this.maxPopVal = maxPerPop(this.genCounts);
@@ -88,7 +88,8 @@ class Graphic extends Component {
       }
 
       componentDidMount(){
-          // console.log(this.maxPopVal)
+          console.log('this here')
+          console.log(max(Object.values(this.maxPopVal)))
           // console.log(this.createData())
           console.log(this.state)
           select(this.popRef.current)
@@ -117,9 +118,9 @@ class Graphic extends Component {
           .append('rect')
           .attr('class', 'pop_rects')
           .attr('x', (d, i) => {
-            return ((d.x * 1.5)* this.squareSize) + d.pop * 0;
+            return ((d.x * this.individualPadding)* this.squareSize) + d.pop * 0;
           })
-          .attr('y', d => (d.y * 1.5) * this.squareSize)
+          .attr('y', d => (d.y * this.individualPadding) * this.squareSize)
           .attr('rx', 2)
           .attr('ry', 2)
           .transition()
@@ -154,11 +155,14 @@ class Graphic extends Component {
         return (
           <div className="scroller-main">
             <svg className="scroller-graphic"
-                 viewBox={[0, 0, (this.squareSize * this.numCols * this.individualPadding * 2)  - this.individualPadding, 100]}
+                 viewBox={[0,
+                           0, 
+                           (this.squareSize * this.numCols * this.individualPadding * 2)  - this.individualPadding, 
+                           (max(Object.values(this.maxPopVal))/ this.numCols) * this.individualPadding * this.squareSize]}
                  >  
                 <svg x="0" 
                      y="0" 
-                     viewBox={[0, 0, (this.squareSize * this.numCols * this.individualPadding * 2) - this.individualPadding, 100]} 
+                     viewBox={[0, 0, (this.squareSize * this.numCols * this.individualPadding * 2) - this.individualPadding, (max(Object.values(this.maxPopVal))/ this.numCols) * this.individualPadding * this.squareSize]} 
                      preserveAspectRatio="xMinYMid meet" 
                      ref={this.popRef}
                      className="pop-graphic"></svg>
