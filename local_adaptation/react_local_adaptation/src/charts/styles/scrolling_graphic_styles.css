@@ -12,7 +12,7 @@
     width: 100%;
     margin: 0;
     top: 10vh;
-    height: 65vh;
+    height: 80vh;
     left: 0;
     border: 1px dashed gray;
 }
@@ -28,4 +28,20 @@
 .scroller-step {
     min-height: 69vh;
     margin-bottom: 40rem;
+}
+
+.param-label {
+   font-family: 'Oswald', sans-serif;
+    font-variation-settings: 'wdth' 500, 'wght' 400;
+    fill: #4f4f4f;
+    text-shadow: 1px 1px 0px #fffff7;
+
+}
+
+.generation-text{
+    font-family: 'Oswald', sans-serif;
+    font-variation-settings: 'wdth' 500, 'wght' 400;
+    font-size: 10vh;
+    fill: #41B3A3;
+       text-shadow: 2px 2px 0px #4f4f4f;
 }
