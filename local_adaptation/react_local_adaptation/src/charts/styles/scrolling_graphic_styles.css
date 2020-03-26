@@ -28,6 +28,16 @@
 .scroller-step {
     min-height: 69vh;
     margin-bottom: 40rem;
+    background: rgba(140, 192, 174, .4);
+    padding: 2vw;
+    border: 3px solid #4f4f4f;
+    border-radius: 3px;
+
+}
+
+.scroller-step p {
+    color: #4f4f4f;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .param-label {
@@ -87,4 +97,16 @@ span.MuiSlider-track {
 span.MuiSlider-rail {
     height: 8px;
     border-radius: 4px;
+}
+
+.try-this {
+    background-color: #E8A87C;
+    border: 2px solid #e39d6d;
+    border-radius: 2px;
+    padding: 2px;
+    color: #fffff7;
+}
+
+.try-this:hover{
+
 }

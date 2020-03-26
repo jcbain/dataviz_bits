@@ -19,6 +19,7 @@ class Graphic extends Component {
     constructor(props){
         super(props);
         this.squareSize = 10;
+        this.magnifySize = 20;
         this.numCols = 40;
         this.individualPadding = 1.2
         this.popMargin = 50;
@@ -62,6 +63,8 @@ class Graphic extends Component {
       createData(){
         const numCols = this.numCols;
         let filteredData = individualData.filter(d => d.mu === "1e-6" && d.m === "1e-4" && d.sigsqr === "25" && d.output_gen == this.state.data)
+        let smallest = min(filteredData, d => d.ind_phen);
+        let biggest = max(filteredData, d => d.ind_phen);
         let chosenData = [];
         this.populations.map(d => {
           let val = d;
@@ -71,6 +74,8 @@ class Graphic extends Component {
             x['pop'] = val;
             let result = filteredData.filter(d => d.pop == val)[v];
             x['ind_phen'] = (result !== undefined) ? result.ind_phen : 0;
+            x['biggest'] = (x['ind_phen'] === biggest) ? true : false;
+            x['smallest'] = (x['ind_phen'] === smallest) ? true : false;
 
             chosenData.push(x);
           })
@@ -109,6 +114,32 @@ class Graphic extends Component {
 
       }
 
+      handleMouseOver() {
+        selectAll('.biggest')
+        .transition()
+        .duration(500)
+        .attr('width',40)
+        .attr('height', 40);
+
+        selectAll('.smallest')
+        .transition()
+        .duration(500)
+        .attr('width',40)
+        .attr('height', 40);
+      }
+
+      handleMouseOut() {
+        selectAll('.biggest')
+        .transition()
+        .attr('width', 10)
+        .attr('height', 10);
+
+        selectAll('.smallest')
+        .transition()
+        .attr('width', 10)
+        .attr('height', 10);
+      }
+
       // componentDidMount(){
       //     select(this.popRef.current)
       //       .selectAll('.pop_rects')  
@@ -129,7 +160,7 @@ class Graphic extends Component {
       // }
     
       onStepEnter = ({ element, data}) => {
-        element.style.border = '1px solid goldenrod';
+        console.log(this.createData().filter(d => d.smallest === true))
         this.setState({ data });
         select(this.popRef.current)
           .selectAll('.pop_rects')  
@@ -137,6 +168,8 @@ class Graphic extends Component {
           .enter()
           .append('rect')
           .attr('class', 'pop_rects')
+          .classed('biggest', d => d.biggest)
+          .classed('smallest', d => d.smallest)
           .attr('x', (d, i) => {
             return ((d.x * this.individualPadding) * this.squareSize) + d.pop * this.popMargin;
           })
@@ -157,10 +190,13 @@ class Graphic extends Component {
           .attr('fill', d => this.colorScale(d.ind_phen))
           .duration(1000)
           .ease(easeSinInOut); 
+           
+          select('.try-this')
+          .on("mouseover", this.handleMouseOver)
+          .on("mouseout", this.handleMouseOut);
       };
     
       onStepExit = ({ element }) => {
-        element.style.border = '1px solid black';
         selectAll('.pop_rects')
           .transition()
           .attr('width', 0)
@@ -220,7 +256,7 @@ class Graphic extends Component {
               >
                 <Step data={10000}>
                   <div className="scroller-step">
-                    <p>And at 10,000th generation</p>
+                      <p>At 10,000 generations out, you can still see that individual phenotypes between the two populations don't look too dissimilar from one another. These individuals <span className="try-this">here</span> are the most divergent indiduals between populations. From what we can tell, there is very little difference.</p>
                   </div>
                 </Step>
 
