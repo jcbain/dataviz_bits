@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import template from '../data/genome_template.json';
 import { scaleLinear } from 'd3-scale';
-import { max } from 'd3-array';
+import { min, max } from 'd3-array';
 import { select } from 'd3-selection';
+import { interpolateHcl } from 'd3-interpolate';
 
 class Genome extends Component {
     constructor(props) {
@@ -11,6 +12,10 @@ class Genome extends Component {
         this.opacityScale = scaleLinear()
         .domain([0, max(this.props.data, d => Math.abs(d.positional_phen))])
         .range([0, 100]);
+        this.colorScale = scaleLinear()
+        .domain([min(this.props.data, d => d.positional_phen), 0, max(this.props.data, d => d.positional_phen)])
+        .range(['#C38D9E', '#fffff7', '#E27D60'])
+        .interpolate(interpolateHcl);
     }
 
     genomeRef = React.createRef();
@@ -48,22 +53,23 @@ class Genome extends Component {
             .enter()
             .append('stop')
             .attr('class', `stop_${this.props.id}_${this.props.pop}`)
-            .attr('stop-color', d => {
-                if( d.positional_phen > 0){
-                    return '#ba3252'
-                } else if(d.positional_phen < 0){
-                    return '#3277a8'
-                } else {
-                    return '#fffff7'
-                }
-            })
-            .attr('stop-opacity', d => {
-                if (d.positional_phen == 0) {
-                    return "100%"
-                } else{
-                    return this.opacityScale(Math.abs(d.positional_phen)) + "%"
-                }
-                } )
+            .attr('stop-color', d => this.colorScale(d.positional_phen))
+            // .attr('stop-color', d => {
+            //     if( d.positional_phen > 0){
+            //         return '#ba3252'
+            //     } else if(d.positional_phen < 0){
+            //         return '#3277a8'
+            //     } else {
+            //         return '#fffff7'
+            //     }
+            // })
+            // .attr('stop-opacity', d => {
+            //     if (d.positional_phen == 0) {
+            //         return "100%"
+            //     } else{
+            //         return this.opacityScale(Math.abs(d.positional_phen)) + "%"
+            //     }
+            //     } )
             .attr('offset', (d, i) => yScale(i) + "%");
     }
 
@@ -74,22 +80,23 @@ class Genome extends Component {
             .data(this.createData())
             .transition()
             .duration(3000)
-            .attr('stop-color', d => {
-                if( d.positional_phen > 0){
-                    return '#ba3252'
-                } else if(d.positional_phen < 0){
-                    return '#3277a8'
-                } else {
-                    return '#fffff7'
-                }
-            })
-            .attr('stop-opacity', d => {
-                if (d.positional_phen == 0) {
-                    return "100%"
-                } else{
-                    return this.opacityScale(Math.abs(d.positional_phen)) + "%"
-                }
-                });
+            .attr('stop-color', d => this.colorScale(d.positional_phen))
+            // .attr('stop-color', d => {
+            //     if( d.positional_phen > 0){
+            //         return '#E27D60'
+            //     } else if(d.positional_phen < 0){
+            //         return '#C38D9E'
+            //     } else {
+            //         return '#fffff7'
+            //     }
+            // })
+            // .attr('stop-opacity', d => {
+            //     if (d.positional_phen == 0) {
+            //         return "100%"
+            //     } else{
+            //         return this.opacityScale(Math.abs(d.positional_phen)) + "%"
+            //     }
+            //     });
     }
 
     render() {
@@ -111,7 +118,7 @@ class Genome extends Component {
                   ry={5}
                   height={80}
                   width={10}
-                  stroke={"#f2f2e6"}
+                  stroke={"black"}
                   strokeWidth={.5}
                   fill={`url(#grads_pop_${this.props.id}_${this.props.pop})`}>
             </rect>

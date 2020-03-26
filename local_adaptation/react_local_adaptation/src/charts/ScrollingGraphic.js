@@ -76,10 +76,10 @@ class Graphic extends Component {
           })
         })
 
-        sort(chosenData).by([
-          { asc: u => u.pop },
-          { asc: u => u.ind_phen }
-        ]);
+        // sort(chosenData).by([
+        //   { asc: u => u.pop },
+        //   { asc: u => u.ind_phen }
+        // ]);
 
         
 
@@ -126,11 +126,6 @@ class Graphic extends Component {
             .attr('width', this.squareSize)
             .attr('fill', d => this.colorScale(d.ind_phen))
           
-      }
-
-      componentDidUpdate(){
-        console.log('this state')
-        console.log(this.state)
       }
     
       onStepEnter = ({ element, data}) => {
@@ -205,9 +200,12 @@ class Graphic extends Component {
                     <text x="20" y="280" className="param-label">GENERATION</text>
                     <text x="15" y="350" className="generation-text">{data}</text>
               </svg>
-              <RangeSlider min={this.phenValues[0]} max={this.phenValues[1]}
+              <div className="scrolling-slider">
+              <RangeSlider 
+                           min={this.phenValues[0]} max={this.phenValues[1]}
                            onSliderChange={this.handleChange}
               />
+              </div>
               
             </div>
 
@@ -217,7 +215,7 @@ class Graphic extends Component {
                 onStepExit={this.onStepExit}
                 progress
                 onStepProgress={this.onStepProgress}
-                offset={0.25}
+                offset={0.35}
                 // debug
               >
                 <Step data={10000}>

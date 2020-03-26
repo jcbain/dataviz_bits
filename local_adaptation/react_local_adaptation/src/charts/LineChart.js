@@ -65,14 +65,15 @@ class LineChart extends Component {
 
         let focusColor = scaleOrdinal()
             .domain(popKeys)
-            .range(['#ba3252','#3277a8','#4daf4a']);
+            .range(['#E27D60', '#C38D9E', '#E8A87C']);
 
         let outsideColor = scaleOrdinal()
             .domain(popKeys)
-            .range(['#dbafba', '#b4cbdb', '#89b388'])
+            .range(['#fffff7', '#fffff7', '#fffff7'])
+            // .range(['#f0b7a8', '#d9bac4', '#E8A87C'])
 
         function nonColor(k) {
-            return "#dcddde";
+            return "#41B3A3";
         }
         
 
@@ -131,7 +132,7 @@ class LineChart extends Component {
 
         return <svg viewBox={[0, 0, this.props.chartDims.width, this.props.chartDims.height]}>
                     {lineGradients}
-                    {contextBackgroundLines}
+                    {/* {contextBackgroundLines} */}
                     {contextLines}
                     {brush}
 

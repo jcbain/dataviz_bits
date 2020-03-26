@@ -3,36 +3,36 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 
-const useStyles = makeStyles({
-    root: {
-        color: '#52af77',
-        height: 8,
-        width: 200,
-    },
-      thumb: {
-        height: 24,
-        width: 24,
-        backgroundColor: '#fff',
-        border: '2px solid currentColor',
-        marginTop: -8,
-        marginLeft: -12,
-        '&:focus, &:hover, &$active': {
-          boxShadow: 'inherit',
-        },
-      },
-      active: {},
-      valueLabel: {
-        left: 'calc(-50% + 4px)',
-      },
-      track: {
-        height: 8,
-        borderRadius: 4,
-      },
-      rail: {
-        height: 8,
-        borderRadius: 4,
-      },
-});
+// const useStyles = makeStyles({
+//     root: {
+//         color: '#52af77',
+//         height: 8,
+//         width: 200,
+//     },
+//       thumb: {
+//         height: 24,
+//         width: 24,
+//         backgroundColor: '#fff',
+//         border: '2px solid currentColor',
+//         marginTop: -8,
+//         marginLeft: -12,
+//         '&:focus, &:hover, &$active': {
+//           boxShadow: 'inherit',
+//         },
+//       },
+//       active: {},
+//       valueLabel: {
+//         left: 'calc(-50% + 4px)',
+//       },
+//       track: {
+//         height: 8,
+//         borderRadius: 4,
+//       },
+//       rail: {
+//         height: 8,
+//         borderRadius: 4,
+//       },
+// });
 
 
 function valuetext(value) {
@@ -41,7 +41,7 @@ function valuetext(value) {
 
 
 export default function RangeSlider(props, state) {
-  const classes = useStyles();
+  // const classes = useStyles();
   const [value, setValue] = React.useState([props.min, props.max]);
 
   const handleChange = (event, newValue) => {
@@ -49,13 +49,12 @@ export default function RangeSlider(props, state) {
     setValue(newValue);
   };
 
-  console.log(props);
-
   return (
     
-    <div className={classes.root}>
+    // <div className={classes.root}>
+      <div>
       <Typography id="range-slider" gutterBottom>
-        Phenotype range
+        PHENOTYPE RANGE
       </Typography>
       <Slider
         value={value}
