@@ -109,24 +109,24 @@ class Graphic extends Component {
 
       }
 
-      componentDidMount(){
-          select(this.popRef.current)
-            .selectAll('.pop_rects')  
-            .data(this.createData())
-            .enter()
-            .append('rect')
-            .attr('class', 'pop_rects')
-            .attr('x', (d, i) => {
-              return ((d.x * (this.individualPadding))* this.squareSize)
-            })
-            .attr('y', d => d.y * this.squareSize)
-            .attr('rx', 2)
-            .attr('ry', 2)
-            .attr('height', this.squareSize)
-            .attr('width', this.squareSize)
-            .attr('fill', d => this.colorScale(d.ind_phen))
+      // componentDidMount(){
+      //     select(this.popRef.current)
+      //       .selectAll('.pop_rects')  
+      //       .data(this.createData())
+      //       .enter()
+      //       .append('rect')
+      //       .attr('class', 'pop_rects')
+      //       .attr('x', (d, i) => {
+      //         return ((d.x * (this.individualPadding))* this.squareSize)
+      //       })
+      //       .attr('y', d => d.y * this.squareSize)
+      //       .attr('rx', 2)
+      //       .attr('ry', 2)
+      //       .attr('height', this.squareSize)
+      //       .attr('width', this.squareSize)
+      //       .attr('fill', d => this.colorScale(d.ind_phen))
           
-      }
+      // }
     
       onStepEnter = ({ element, data}) => {
         element.style.border = '1px solid goldenrod';
