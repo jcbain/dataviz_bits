@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Scrollama, Step } from 'react-scrollama';
 
+import './styles/scrolling_graphic_styles.css';
+
 import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
 import { easeSinInOut } from 'd3-ease';
@@ -13,8 +15,6 @@ import RangeSlider from '../components/RangeSlider';
 
 import individualData from '../data/individuals_small';
  
-import './styles/scrolling_graphic_styles.css';
-
 class Graphic extends Component {
     constructor(props){
         super(props);
@@ -143,7 +143,7 @@ class Graphic extends Component {
           .append('rect')
           .attr('class', 'pop_rects')
           .attr('x', (d, i) => {
-            return ((d.x * this.individualPadding)* this.squareSize) + d.pop * this.popMargin;
+            return ((d.x * this.individualPadding) * this.squareSize) + d.pop * this.popMargin;
           })
           .attr('y', d => (d.y * this.individualPadding) * this.squareSize)
           .attr('rx', 2)
@@ -161,9 +161,7 @@ class Graphic extends Component {
           
           .attr('fill', d => this.colorScale(d.ind_phen))
           .duration(1000)
-          .ease(easeSinInOut);
-
-        
+          .ease(easeSinInOut); 
       };
     
       onStepExit = ({ element }) => {
@@ -239,14 +237,6 @@ class Graphic extends Component {
                     <p>And at 50,000th generation</p>
                   </div>
                 </Step>
-                {/* {steps.map(value => (
-                  <Step data={value} key={value}>
-                    <div className="scroller-step">
-                      <p>step value: {value}</p>
-                      <p>{value === data && progress}</p>
-                    </div>
-                  </Step>
-                ))} */}
               </Scrollama>
             </div>
 
