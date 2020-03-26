@@ -7,14 +7,13 @@ import { easeBounce, easeSinInOut } from 'd3-ease';
 import { select, selectAll } from 'd3-selection';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
-// import sort from 'fast-sort'
+import sort from 'fast-sort'
 
 import RangeSlider from '../components/RangeSlider';
 
 import individualData from '../data/individuals_small';
  
 import './styles/scrolling_graphic_styles.css';
-import { thresholdFreedmanDiaconis } from 'd3';
 
 class Graphic extends Component {
     constructor(props){
@@ -77,10 +76,10 @@ class Graphic extends Component {
           })
         })
 
-        // sort(chosenData).by([
-        //   { asc: u => u.pop },
-        //   { asc: u => u.ind_phen }
-        // ]);
+        sort(chosenData).by([
+          { asc: u => u.pop },
+          { asc: u => u.ind_phen }
+        ]);
 
         
 
