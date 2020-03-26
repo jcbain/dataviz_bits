@@ -7,7 +7,7 @@ import { easeBounce, easeSinInOut } from 'd3-ease';
 import { select, selectAll } from 'd3-selection';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
-import sort from 'fast-sort'
+// import sort from 'fast-sort'
 
 import RangeSlider from '../components/RangeSlider';
 
@@ -26,9 +26,11 @@ class Graphic extends Component {
         this.genCounts = individualData.map(d => d.pop).filter(unique).map(v => countIndividaulsPerGeneration(individualData, v))
         this.populations = individualData.map(d => d.pop).filter(unique)
         this.maxPopVal = maxPerPop(this.genCounts);
-        this.phenValues = [-1, 1];
+        this.minPhen = min(individualData, d => d.ind_phen)
+        this.maxPhen = max(individualData, d => d.ind_phen)
+        this.phenValues = [this.minPhen, this.maxPhen];
         this.colorScale = scaleLinear()
-                            .domain([-1, 0, 1])
+                            .domain([this.minPhen, 0, this.maxPhen])
                             .range(['#C38D9E', '#fffff7', '#E27D60'])
                             .interpolate(interpolateHcl);
         this.handleChange = this.handleChange.bind(this);
@@ -45,8 +47,17 @@ class Graphic extends Component {
       popRef = React.createRef();
 
       handleChange(newValue){
-        
         this.setState({phenValues: newValue})
+        select(this.popRef.current)
+          .selectAll('.pop_rects')
+          .transition()
+          .attr('opacity', d=>{
+            if(d.ind_phen >= newValue[0] && d.ind_phen <= newValue[1]){
+              return 1.0;
+            } else {
+              return .25;
+            }
+          })
       }
 
       createData(){
@@ -66,10 +77,10 @@ class Graphic extends Component {
           })
         })
 
-        sort(chosenData).by([
-          { asc: u => u.pop },
-          { asc: u => u.ind_phen }
-        ]);
+        // sort(chosenData).by([
+        //   { asc: u => u.pop },
+        //   { asc: u => u.ind_phen }
+        // ]);
 
         
 
@@ -138,6 +149,13 @@ class Graphic extends Component {
           .attr('y', d => (d.y * this.individualPadding) * this.squareSize)
           .attr('rx', 2)
           .attr('ry', 2)
+          .attr('opacity', d=>{
+            if(d.ind_phen >= this.state.phenValues[0] && d.ind_phen <= this.state.phenValues[1]){
+              return 1.0;
+            } else {
+              return .25;
+            }
+           })
           .transition()
           .attr('height', this.squareSize)
           .attr('width', this.squareSize)
