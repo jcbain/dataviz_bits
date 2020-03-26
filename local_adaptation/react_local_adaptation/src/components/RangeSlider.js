@@ -8,7 +8,7 @@ const useStyles = makeStyles({
         color: '#52af77',
         height: 8,
         width: 200,
-      },
+    },
       thumb: {
         height: 24,
         width: 24,

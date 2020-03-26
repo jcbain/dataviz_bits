@@ -3,7 +3,7 @@ import { Scrollama, Step } from 'react-scrollama';
 
 import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
-import { easeBounce, easeSinInOut } from 'd3-ease';
+import { easeSinInOut } from 'd3-ease';
 import { select, selectAll } from 'd3-selection';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
