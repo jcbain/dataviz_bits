@@ -8,7 +8,7 @@ import { select, selectAll } from 'd3-selection';
 import { min, max } from 'd3-array';
 import { nest } from 'd3-collection';
 import sort from 'fast-sort'
-
+import Slider from '@material-ui/core/Slider';
 import individualData from '../data/individuals_small';
  
 import './styles/scrolling_graphic_styles.css';
