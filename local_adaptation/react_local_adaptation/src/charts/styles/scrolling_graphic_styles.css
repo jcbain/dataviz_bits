@@ -3,7 +3,7 @@
     max-width: 60rem;
     margin: 3rem auto;
     padding: 1rem;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 .scroller-graphic {
@@ -14,7 +14,7 @@
     top: 10vh;
     height: 80vh;
     left: 0;
-    border: 1px dashed gray;
+    /* border: 1px dashed gray; */
 }
 
 .scroller {
